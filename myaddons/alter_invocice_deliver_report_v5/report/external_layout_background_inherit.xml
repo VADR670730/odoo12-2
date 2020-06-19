@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="external_layout_background_inherit" inherit_id="web.external_layout_background">
+        <xpath expr="//div[hasclass('header')]" position="replace">
+            <div class="header">
+                <div class="row">
+                    <div class="col-xs-2 text-right" style="position: absolute;">
+                        <img t-if="company.logo" t-att-src="image_data_uri(company.logo)" class="float-left"
+                             style="max-height: 120px;" alt="Logo"/>
+                    </div>
+                    <div class="col-12">
+                        <div style="line-height: 30px; font-size: 20px; text-align: center;">Mega Combine Company
+                            Limited
+                        </div>
+                        <div style="line-height: 30px; font-size: 20px; text-align: center;">賣家聯合有限公司</div>
+                        <div style="line-height: 20px; font-size: 12px; text-align: center;">香港九龍青山道
+                            <span style="font-size: 12px">489-491號香港工業中心B座一樓B12-B13室</span>
+                        </div>
+                        <div style="line-height: 20px; font-size: 12px; text-align: center;">B12-B13,1/F,Block B,Hong
+                            Kong Industrial Center, 489-491 Castle Peak Road, Kowloon, Hong Kong
+                        </div>
+                        <div style="line-height: 20px; font-size: 12px; text-align: center;">電話Tel：（852）2370 3588
+                            傳真Fax：（852）2370 1855
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </xpath>
+        <xpath expr="//div[hasclass('article')]" position="replace">
+            <div class="article" t-att-data-oe-model="o and o._name" t-att-data-oe-id="o and o.id"
+                 t-att-data-oe-lang="o and o.env.context.get('lang')">
+                <t t-call="web.address_layout"/>
+                <t t-raw="0"/>
+            </div>
+        </xpath>
+        <xpath expr="//div[hasclass('footer')]" position="replace">
+            <div class="footer">
+                <div class="text-center">
+                    <ul class="list-inline">
+                        <li t-if="company.phone" class="list-inline-item">
+                            <i class="fa fa-phone" role="img" aria-label="Phone" title="Phone"/>
+                            <span t-field="company.phone"/>
+                        </li>
+                        <li t-if="company.email" class="list-inline-item">
+                            <i class="fa fa-at" role="img" aria-label="Email" title="Email"/>
+                            <span t-field="company.email"/>
+                        </li>
+                        <li t-if="company.website" class="list-inline-item">
+                            <i class="fa fa-globe" role="img" aria-label="Website" title="Website"/>
+                            <span t-field="company.website"/>
+                        </li>
+                        <li t-if="company.vat" class="list-inline-item">
+                            <i class="fa fa-building-o" role="img" aria-label="Fiscal number"/>
+                            <t t-esc="company.country_id.vat_label or 'Tax ID'"/>:
+                            <span t-field="company.vat"/>
+                        </li>
+                    </ul>
+                    <div t-field="company.report_footer"/>
+                    <div t-if="report_type == 'pdf'" class="text-muted">
+                        Page:
+                        <span class="page"/>
+                        of
+                        <span class="topage"/>
+                    </div>
+                </div>
+            </div>
+        </xpath>
+
+    </template>
+</odoo>
+
+

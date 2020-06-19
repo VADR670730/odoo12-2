@@ -1,0 +1,63 @@
+<odoo>
+  <data>
+          <record id="view_order_form_add_sale_barcode" model="ir.ui.view">
+            <field name="name">sale.order.form.barcode</field>
+            <field name="model">sale.order</field>
+            <field name="inherit_id" ref="sale.view_order_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//tree/field[@name='product_id']" position="after">
+                      <field name="barcode"/>
+                </xpath>
+            </field>
+        </record>
+
+
+        <record id="purchase_order_form_add_purchase_barcode" model="ir.ui.view">
+            <field name="name">purchase.order.form.barcode</field>
+            <field name="model">purchase.order</field>
+            <field name="inherit_id" ref="purchase.purchase_order_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//notebook/page/field[@name='order_line']/tree/field[@name='product_id']" position="after">
+                      <field name="barcode"/>
+                </xpath>
+            </field>
+        </record>
+
+
+      <record id="mrp_production_form_view_add_mrp_barcode" model="ir.ui.view">
+            <field name="name">mrp.production.form.barcode</field>
+            <field name="model">mrp.production</field>
+            <field name="inherit_id" ref="mrp.mrp_production_form_view"/>
+            <field name="arch" type="xml">
+                <xpath expr="//notebook/page/field[@name='move_raw_ids']/tree/field[@name='product_id']" position="after">
+                      <field name="barcode"/>
+                </xpath>
+            </field>
+      </record>
+
+
+      <record id="mrp_bom_form_view_add_mrp_barcode" model="ir.ui.view">
+            <field name="name">mrp.bom.form.barcode</field>
+            <field name="model">mrp.bom</field>
+            <field name="inherit_id" ref="mrp.mrp_bom_form_view"/>
+            <field name="arch" type="xml">
+                <xpath expr="//notebook/page/field[@name='bom_line_ids']/tree/field[@name='product_id']" position="after">
+                      <field name="barcode"/>
+                </xpath>
+            </field>
+      </record>
+
+
+      <record id="view_picking_form_add_stock_barcode" model="ir.ui.view">
+            <field name="name">stock.picking.form.barcode</field>
+            <field name="model">stock.picking</field>
+            <field name="inherit_id" ref="stock.view_picking_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//notebook/page/field[@name='move_ids_without_package']/tree/field[@name='product_id']" position="after">
+                      <field name="barcode"/>
+                </xpath>
+            </field>
+      </record>
+
+  </data>
+</odoo>

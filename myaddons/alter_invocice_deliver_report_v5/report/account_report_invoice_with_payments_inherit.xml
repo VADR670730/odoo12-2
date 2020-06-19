@@ -1,0 +1,193 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="report_invoice_document_with_payments_inherit" inherit_id="account.report_invoice_document">
+            <xpath expr="//t[@t-set='address']" position="replace"></xpath>
+            <xpath expr="//div[hasclass('page')]" position="replace">
+            <div class="page" style="margin-top:20px;">
+                <div class="oe_structure"/>
+                <h2 class="text-center">
+                    <span>Invoice</span>
+                </h2>
+                <div style="font-size:13px;">
+                <div class="row">
+                    <div class="col-6">
+                        <strong class="mr16">Customer:</strong>
+                        <span t-field="o.partner_id"/>
+                    </div>
+                    <div class="col-6">
+                        <strong>Invoice No:</strong>
+                        <t t-if="o.sequence_number_next_prefix != False">
+                            <span t-field="o.sequence_number_next_prefix"/>
+                            <span t-field="o.sequence_number_next"/>
+                        </t>
+                        <t t-else="else">
+                           <span t-field="o.number"/>
+                        </t>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-6">
+                        <strong class="mr16">Invoice Address:</strong>
+                        <span t-field="o.partner_id"/>
+                    </div>
+                    <div class="col-6">
+                        <strong class="mr16">Invoice Date</strong>
+                        <span t-field="o.date_invoice"/>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-6">
+                        <t t-if="o.type in ['in_invoice','in_refund']">
+                        <strong class="mr16">SO No:</strong>
+                        <span t-field="o.reference"/>
+                        </t>
+                        <t t-if="o.type in ['out_invoice','out_refund']">
+                        <strong class="mr16">Shipping To:</strong>
+                        <span t-field="o.partner_shipping_id"/>
+                        </t>
+                    </div>
+                    <div class="col-6">
+                        <strong class="mr16">Due Date:</strong>
+                        <span t-field="o.date_due"/>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-6">
+                        <t t-if="o.type in ['in_invoice','in_refund']">
+                        <strong class="mr16">PO No:</strong>
+                        <span t-field="o.origin"/>
+                        </t>
+                        <t t-if="o.type in ['out_invoice','out_refund']">
+                        <strong class="mr16">SO No:</strong>
+                        <span t-field="o.origin"/>
+                        </t>
+
+                    </div>
+                    <div class="col-6">
+                        <strong class="mr16">Payment:</strong>
+                        <span t-field="o.payment_term_id"/>
+                    </div>
+                </div>
+                <t t-if="o.type in ['out_invoice','out_refund']">
+                <div class="row">
+                    <div class="col-6">
+                        <strong class="mr16">PO No:</strong>
+                        <span t-field="o.name"/>
+                    </div>
+                    <div class="col-6">
+                        <strong class="mr16">Gross:</strong>
+                        <t t-if="o.is_gross == False">
+                            <span>NO</span>
+                        </t>
+                        <t t-if="o.is_gross == True">
+                            <span>YES</span>
+                        </t>
+                    </div>
+                </div>
+                </t>
+                </div>
+
+                <table style="font-size: 12px; width: 100%; margin: 10px 0; border-collapse: collapse;">
+                    <thead>
+                        <tr style="font-size: 14px;">
+                            <th style="border: 1px solid #000; padding: 5px" class="text-center">產品名稱</th>
+                            <th style="border: 1px solid #000; padding: 5px" class="text-center">數量</th>
+                            <th style="border: 1px solid #000; padding: 5px" class="text-center">單價</th>
+                            <t t-if="o.type in ['out_invoice','out_refund']">
+                            <th style="border: 1px solid #000; padding: 5px" class="text-center">TD%</th>
+                            <th style="border: 1px solid #000; padding: 5px" class="text-center">PD%</th>
+                            <th style="border: 1px solid #000; padding: 5px" class="text-center">IO%</th>
+                            <th style="border: 1px solid #000; padding: 5px" class="text-center">OT%</th>
+                            </t>
+                            <th style="border: 1px solid #000; padding: 5px" class="text-center">價格</th>
+                        </tr>
+                    </thead>
+                    <tbody class="sale_tbody">
+                        <t t-foreach="o.invoice_line_ids" t-as="l">
+                            <tr t-if="l.quantity">
+                                <td style="border: 1px solid #000; padding: 5px">
+                                    <span t-field="l.product_id"/>
+                                </td>
+                                <td style="border: 1px solid #000; padding: 5px" class="text-right">
+                                    <span t-esc="int(l.quantity)"/>
+                                    <span t-field="l.uom_id.name"/>
+                                </td>
+                                <td style="border: 1px solid #000; padding: 5px" class="text-right">
+                                    <span t-field="l.price_unit"
+                                          t-options='{"widget": "monetary", "display_currency": l.product_id.pricelist_id.currency_id}'/>
+                                </td>
+                                <t t-if="o.type in ['out_invoice','out_refund']">
+                                <td style="border: 1px solid #000; padding: 5px" class="text-right">
+                                    <span t-esc="int(l.discount_td)"/>
+                                </td>
+                                <td style="border: 1px solid #000; padding: 5px" class="text-right">
+                                    <span t-esc="int(l.discount_pd)"/>
+                                </td>
+                                <td style="border: 1px solid #000; padding: 5px" class="text-right">
+                                    <span t-esc="int(l.discount_io)"/>
+                                </td>
+                                <td style="border: 1px solid #000; padding: 5px" class="text-right">
+                                    <span t-esc="int(l.discount_ot)"/>
+                                </td>
+                                </t>
+                                <td style="border: 1px solid #000; padding: 5px" class="text-right">
+                                    <span t-field="l.price_subtotal"
+                                          t-options='{"widget": "monetary", "display_currency": l.product_id.pricelist_id.currency_id}'/>
+                                </td>
+                            </tr>
+                        </t>
+                    </tbody>
+                </table>
+                <div class="clearfix">
+                    <div id="total" class="row" name="total">
+                        <div t-attf-class="#{'col-4' if report_type != 'html' else 'col-sm-7 col-md-5'} ml-auto">
+                            <table class="table table-sm">
+
+                                <tr class="border-black o_total">
+                                    <td>
+                                        <strong>Total</strong>
+                                    </td>
+                                    <td class="text-right">
+                                        <span t-field="o.amount_total"/>
+                                    </td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row" style="font-size:13px;">
+                    <div class="col-8">
+                        <div>1) OVERDUE BALANCE WILL CHARGE INTEREST 1.5% PER MONTH.</div>
+                        <div>2) ANY CLAIMS OR COMPLAINTS REGARDING THE ABOVE DELIVERED GOODS MUST BE MADE IN WRITING
+                            WITHIN 7 DAYS.
+                        </div>
+                        <div>3) NO PAYMENT RECOGNIZED EXCEPT AGAINST OFFICIAL RECEIPT.</div>
+                        <h4 style="text-decoration: underline">BANK A/C</h4>
+                        <div>
+                            <span style="font-weight: 900">A/C NAME:</span>
+                            <span>Mega Combine Company Ltd</span>
+                        </div>
+                        <div>
+                            <span style="font-weight: 900">BANK:</span>
+                            <span>Hang Seng Bank</span>
+                        </div>
+                        <div>
+                            <span style="font-weight: 900">A/C NO:</span>
+                            <span>390-644706-883</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            </xpath>
+    </template>
+
+    <template id="report_invoice_document_with_payments_inherit2" inherit_id="account.report_invoice_document_with_payments">
+            <xpath expr="//t[@t-set='payments_vals']" position="replace"></xpath>
+            <xpath expr="//t[@t-foreach='payments_vals']" position="replace"></xpath>
+            <xpath expr="//t[@t-if='len(payments_vals) > 0']" position="replace"></xpath>
+    </template>
+
+</odoo>
+
+

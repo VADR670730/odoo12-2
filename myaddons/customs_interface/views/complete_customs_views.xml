@@ -1,0 +1,146 @@
+<odoo>
+    <data>
+        <record id="view_customs_company" model="ir.ui.view">
+            <field name="name">view.customs.company</field>
+            <field name="model">res.company</field>
+            <field name="inherit_id" ref="base.view_company_form"/>
+            <field name="arch" type="xml">
+
+                <xpath expr="//form/sheet/notebook/page/group/group[1]/div[@class='o_address_format']" position="after">
+                    <field name="ems_type"/>
+                    <field name="ems_no" attrs="{'required': [('ems_type', '=', True)]}"/>
+                </xpath>
+
+            </field>
+        </record>
+
+        <record id="view_customs_purchase" model="ir.ui.view">
+            <field name="name">view.customs.purchase</field>
+            <field name="model">purchase.order</field>
+            <field name="inherit_id" ref="purchase.purchase_order_form"/>
+            <field name="arch" type="xml">
+
+                <xpath expr="//sheet/group/group[2]/field[@name='company_id']" position="after">
+                    <field name="rlt_no" placeholder="多编号时，请以（编号,编号,编号）的方式书写。"/>
+                </xpath>
+
+            </field>
+        </record>
+
+        <record id="view_customs_sale" model="ir.ui.view">
+            <field name="name">view.customs.sale</field>
+            <field name="model">sale.order</field>
+            <field name="inherit_id" ref="sale.view_order_form"/>
+            <field name="arch" type="xml">
+
+                <xpath expr="//sheet/group/group[1]/field[@name='partner_shipping_id']" position="after">
+                    <field name="rlt_no" placeholder="多编号时，请以（编号,编号,编号）的方式书写。"/>
+                </xpath>
+
+            </field>
+        </record>
+
+        <record id="view_customs_stock" model="ir.ui.view">
+            <field name="name">view.customs.stock</field>
+            <field name="model">stock.picking</field>
+            <field name="inherit_id" ref="stock.view_picking_form"/>
+            <field name="arch" type="xml">
+
+                <!--<xpath expr="//sheet/group/group[1]/field[@name='backorder_id']" position="after">-->
+                    <!--<field name="picking_t" invisible="True"/>-->
+                    <!--<field name="logistics_no" attrs="{'invisible': [('picking_t','=','0')]}"/>-->
+                    <!--<field name="logistics_nm_id" attrs="{'invisible': [('picking_t','=','0')]}"/>-->
+                <!--</xpath>-->
+
+                <!--<xpath expr="//sheet/group/group[2]/field[@name='owner_id']" position="after">-->
+                    <!--<field name="logistics_cd" attrs="{'invisible': [('picking_t','=','0')]}"/>-->
+                    <!--<field name="handlingin_id" attrs="{'invisible': [('picking_t','=','0')]}"/>-->
+                    <!--<field name="warehouse_cd" invisible="1"/>-->
+                <!--</xpath>-->
+
+                <xpath expr="//sheet/notebook/page[@name='note']" position="after">
+                    <page string="海关信息" name="customs_info" attrs="{'invisible': [('picking_t','=','0')]}">
+                        <group>
+                            <group>
+                                <field name="picking_t" invisible="True"/>
+                                <field name="logistics_no" readonly="1"/>
+                                <field name="logistics_nm_id"/>
+                            </group>
+                            <group>
+                                <field name="logistics_cd"/>
+                                <field name="handlingin_id"/>
+                                <field name="warehouse_cd" invisible="1"/>
+                            </group>
+                        </group>
+                    </page>
+                </xpath>
+
+
+            </field>
+        </record>
+
+        <record id="view_customs_product_template" model="ir.ui.view">
+            <field name="name">customs.product.template</field>
+            <field name="model">product.template</field>
+            <field name="priority">6</field>
+            <field name="inherit_id" ref="product.product_template_form_view"/>
+            <field name="arch" type="xml">
+                <xpath expr="//page[@name='purchase']" position="attributes">
+                    <attribute name="invisible">0</attribute>
+                </xpath>
+                <page name="inventory" position="after">
+                    <page string="备案信息" name="information">
+                        <group>
+                            <group>
+                                <field name="gds_seqno"/>
+                                <field name="code_ts"/>
+                                <field name="gds_model"/>
+                                <field name="g_unit_id"/>
+                                <field name="unit_1_id"/>
+                                <field name="currency_id"/>
+                            </group>
+                            <group>
+                                <field name="gds_mtno"/>
+                                <field name="gds_name"/>
+                                <field name="natcd"/>
+                                <field name="g_unit_ratio"/>
+                                <field name="unit_1_ratio"/>
+                            </group>
+                        </group>
+                    </page>
+                </page>
+            </field>
+        </record>
+
+        <record id="view_customs_stock_quant" model="ir.ui.view">
+            <field name="name">view.customs.stock.quant</field>
+            <field name="model">stock.quant</field>
+            <field name="inherit_id" ref="stock.view_stock_quant_form"/>
+            <field name="arch" type="xml">
+
+                <xpath expr="//form/sheet/group/group[2]/div[2]" position="after">
+                    <field name="warehouse_type"/>
+                    <field name="warehouse_property"/>
+                </xpath>
+
+            </field>
+        </record>
+
+        <record id="view_customs_stock_line" model="ir.ui.view">
+            <field name="name">view.customs.stock.line</field>
+            <field name="model">stock.move.line</field>
+            <field name="inherit_id" ref="stock.view_move_line_form"/>
+            <field name="arch" type="xml">
+
+                <xpath expr="//form/sheet/group/group[2]/field[@name='owner_id']" position="after">
+                    <field name="move_num"/>
+                    <field name="in_rack_date"/>
+                    <field name="out_rack_date"/>
+                </xpath>
+
+            </field>
+        </record>
+
+
+    </data>
+</odoo>

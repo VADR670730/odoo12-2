@@ -1,0 +1,65 @@
+<odoo>
+  <data>
+          <record id="view_order_form_add_sale_sequence" model="ir.ui.view">
+            <field name="name">sale.order.form.sequence</field>
+            <field name="model">sale.order</field>
+            <field name="inherit_id" ref="sale.view_order_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//notebook/page[@name='order_lines']/field[@name='order_line']" position="attributes">
+                    <attribute name="context">{'sub_nums':sub_nums}</attribute>
+                </xpath>
+
+                <xpath expr="//header/field[@name='authorized_transaction_ids']" position="before">
+                    <field name="sub_nums" invisible="1"/>
+                </xpath>
+
+                <xpath expr="//tree/field[@name='sequence']" position="after">
+                      <field name="show_sequence"/>
+                </xpath>
+            </field>
+        </record>
+
+
+        <record id="purchase_order_form_add_purchase_sequence" model="ir.ui.view">
+            <field name="name">purchase.order.form.sequence</field>
+            <field name="model">purchase.order</field>
+            <field name="inherit_id" ref="purchase.purchase_order_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//notebook/page/field[@name='order_line']" position="attributes">
+                    <attribute name="context">{'sub_nums':sub_nums,'partner_id':partner_id}</attribute>
+                </xpath>
+
+                <xpath expr="//header/button[@name='action_rfq_send']" position="before">
+                    <field name="sub_nums" invisible="1"/>
+                </xpath>
+
+                <xpath expr="//tree/field[@name='sequence']" position="after">
+                      <field name="show_sequence"/>
+                </xpath>
+            </field>
+        </record>
+
+
+      <record id="view_picking_form_add_stock_sequence" model="ir.ui.view">
+            <field name="name">stock.picking.form.sequence</field>
+            <field name="model">stock.picking</field>
+            <field name="inherit_id" ref="stock.view_picking_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//header/field[@name='id']" position="before">
+                    <field name="sub_nums" invisible="1"/>
+                </xpath>
+                <xpath expr="//notebook/page/field[@name='move_ids_without_package']" position="attributes">
+                    <attribute name="context">
+                        {'picking_type_code': picking_type_code, 'default_picking_id': id, 'form_view_ref':'stock.view_move_picking_form', 'address_in_id': partner_id, 'default_picking_type_id': picking_type_id, 'default_location_id': location_id, 'default_location_dest_id': location_dest_id,'sub_nums':sub_nums}
+                    </attribute>
+                </xpath>
+
+                <xpath expr="//notebook/page/field[@name='move_ids_without_package']/tree/field[@name='product_id']" position="before">
+                    <field name="sequence" widget="handle"/>
+                    <field name="show_sequence"/>
+                </xpath>
+            </field>
+      </record>
+
+  </data>
+</odoo>

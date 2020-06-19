@@ -1,0 +1,235 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <!--  第二版  -->
+    <record id="view_fix_account3" model="ir.ui.view">
+        <field name="name">view.fix.account3</field>
+        <field name="model">account.payment</field>
+        <field name="inherit_id" ref="account.view_account_payment_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="/form/sheet/group/group/field[@name='destination_journal_id']" position="after">
+                <label for="self_amount"/>
+                <div name="self_amount" class="o_row">
+                    <field name="self_amount"/>
+                    <field name="unit_id" options="{'no_create': True, 'no_open': True}"
+                           groups="base.group_multi_currency" attrs="{'readonly': [('state', '!=', 'draft')]}"/>
+                </div>
+            </xpath>
+
+        </field>
+    </record>
+
+    <record id="view_fix_account" model="ir.ui.view">
+        <field name="name">view.fix.account</field>
+        <field name="model">account.payment</field>
+        <field name="inherit_id" ref="account.view_account_payment_invoice_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="/form/sheet/group/group[1]/div" position="after">
+                <field name="self_amount"/>
+            </xpath>
+
+            <xpath expr="/form/sheet/group/group[3]" position="replace">
+            </xpath>
+
+            <!--<xpath expr="//sheet/group/group[1]/div/field[@name='currency_id']" position="replace">-->
+                <!--<field name="currency_id" options="{'no_create': True, 'no_open': True}"-->
+                       <!--groups="base.group_multi_currency" readonly="1"/>-->
+            <!--</xpath>-->
+
+            <xpath expr="/form/sheet/group" position="after">
+                <field name="flag" invisible="1"/>
+                <!--<group col="8" attrs="{'invisible': [('flag', '!=', '1')]}">-->
+                <!--<span style="width:120px">其它</span>-->
+                <!--<field name="total_price" nolabel="1" style="width:120px" readonly="1"/>-->
+                <!--<span style="width:120px">在</span>-->
+                <!--</group>-->
+
+                <group attrs="{'invisible': [('flag', '!=', '1')]}">
+                    <table>
+                        <tr>
+                            <td width="120px">
+                                付款差额
+                            </td>
+                            <td width="120px">
+                                <field name="total_price" nolabel="1" readonly="1"/>
+                            </td>
+                            <td width="120px">
+                                在
+                            </td>
+                        </tr>
+                    </table>
+                </group>
+
+                <!--<div>-->
+                <!--<span style="width:100%">付款差额</span>-->
+                <!--<field name="total_price" nolabel="1" readonly="1"/>-->
+                <!--<span style="width:100%">在</span>-->
+                <!--</div>-->
+
+                <group attrs="{'invisible': [('flag', '!=', '1')]}">
+                    <div>
+                        <field name="writeoff_account_id" string="Post Difference In">
+                            <tree editable="top">
+                                <field name="code"/>
+                                <field name="name"/>
+                                <field name="money"/>
+                                <field name="currencys_id" readonly="1"/>
+                                <!--<field name="currencys_id"/>-->
+                                <field name="self_amount"/>
+                                <field name="remark"/>
+                            </tree>
+                            <!--<form>-->
+                            <!--<group>-->
+                            <!--<group>-->
+                            <!--<field name="code" readonly="1" invisible="1"/>-->
+                            <!--<field name="name" readonly="1" invisible="1"/>-->
+                            <!--&lt;!&ndash;<label for="money" class="oe_edit_only" string="金额"/>&ndash;&gt;-->
+                            <!--<field name="money"/>-->
+                            <!--&lt;!&ndash;<label for="self_amount"/>&ndash;&gt;-->
+                            <!--<field name="self_amount"/>-->
+                            <!--</group>-->
+
+                            <!--<group>-->
+                            <!--&lt;!&ndash;<label for="currencys_id"/>&ndash;&gt;-->
+                            <!--<field name="currencys_id"/>-->
+                            <!--&lt;!&ndash;<label for="remark" class="oe_edit_only" string="标签"/>&ndash;&gt;-->
+                            <!--<field name="remark"/>-->
+                            <!--</group>-->
+                            <!--</group>-->
+                            <!--</form>-->
+                        </field>
+                        <label for="journal_id" string="Journal" attrs="{'invisible': [('amount', '!=', 0)]}"/>
+                        <field name="journal_id" string="Journal" widget="selection"
+                               attrs="{'invisible': [('amount', '!=', 0)]}"/>
+                    </div>
+                </group>
+            </xpath>
+
+            <xpath expr="/form/sheet/group[3]" position="after">
+                <group attrs="{'invisible': [('payment_difference', '=', 0.0)]}">
+                    <label for="payment_difference"/>
+                    <div>
+                        <field name="payment_difference"/>
+                        <field name="payment_difference_handling" widget="radio" nolabel="1"/>
+                    </div>
+                </group>
+            </xpath>
+        </field>
+    </record>
+
+    <!--批量付款-->
+    <record id="view_fix_batch_account" model="ir.ui.view">
+        <field name="name">view.fix.batch.account</field>
+        <field name="model">account.register.payments</field>
+        <field name="inherit_id" ref="account.view_account_payment_from_invoices"/>
+        <field name="arch" type="xml">
+            <xpath expr="//form/group/group[1]/div" position="after">
+                <field name="self_amount"/>
+            </xpath>
+
+            <xpath expr="//form/group/group[3]" position="replace">
+            </xpath>
+
+            <!--<xpath expr="//group/group/div/field[@name='currency_id']" position="replace">-->
+                <!--<field name="currency_id" options="{'no_create': True, 'no_open': True}"-->
+                       <!--groups="base.group_multi_currency" readonly="1"/>-->
+            <!--</xpath>-->
+
+            <xpath expr="//form/group" position="after">
+                <field name="payment_difference" invisible="1"/>
+                <field name="flag" invisible="1"/>
+                <!--<group col="8" attrs="{'invisible': [('flag', '!=', '1')]}">-->
+                <!--<span>付款差额</span>-->
+                <!--<field name="total_price" nolabel="1" width="10%" readonly="1"/>-->
+                <!--<span>在</span>-->
+                <!--</group>-->
+                <group>
+                </group>
+
+                <span>付款差额</span>
+                <field name="total_price" nolabel="1" readonly="1"/>
+                <span>在</span>
+
+                <group attrs="{'invisible': [('flag', '!=', '1')]}">
+                    <div>
+                        <field name="writeoff_account_id" string="Post Difference In">
+                            <tree editable="top">
+                                <field name="code"/>
+                                <field name="name"/>
+                                <field name="money"/>
+                                <field name="currencys_id" readonly="1"/>
+                                <!--<field name="currencys_id"/>-->
+                                <field name="self_amount"/>
+                                <field name="remark"/>
+                            </tree>
+                            <!--<form>-->
+                            <!--<group>-->
+                            <!--<group>-->
+                            <!--<field name="code" readonly="1" invisible="1"/>-->
+                            <!--<field name="name" readonly="1" invisible="1"/>-->
+                            <!--&lt;!&ndash;<label for="money" class="oe_edit_only" string="金额"/>&ndash;&gt;-->
+                            <!--<field name="money"/>-->
+                            <!--&lt;!&ndash;<label for="self_amount"/>&ndash;&gt;-->
+                            <!--<field name="self_amount"/>-->
+                            <!--</group>-->
+
+                            <!--<group>-->
+                            <!--&lt;!&ndash;<label for="currencys_id"/>&ndash;&gt;-->
+                            <!--<field name="currencys_id"/>-->
+                            <!--&lt;!&ndash;<label for="remark" class="oe_edit_only" string="标签"/>&ndash;&gt;-->
+                            <!--<field name="remark"/>-->
+                            <!--</group>-->
+                            <!--</group>-->
+                            <!--</form>-->
+                        </field>
+                        <label for="journal_id" string="Journal" attrs="{'invisible': [('amount', '!=', 0)]}"/>
+                        <field name="journal_id" string="Journal" widget="selection"
+                               attrs="{'invisible': [('amount', '!=', 0)]}"/>
+                    </div>
+                </group>
+            </xpath>
+
+            <xpath expr="//form/group[3]" position="after">
+                <group attrs="{'invisible': [('payment_difference', '=', 0.0)]}">
+                    <label for="payment_difference"/>
+                    <div>
+                        <field name="payment_difference"/>
+                        <field name="payment_difference_handling" widget="radio" nolabel="1"/>
+                    </div>
+                </group>
+            </xpath>
+
+
+        </field>
+    </record>
+
+    <!--<record id="view_inherit_account_move_line" model="ir.ui.view">-->
+    <!--<field name="name">view.inherit.account.move.line</field>-->
+    <!--<field name="model">account.move.line</field>-->
+    <!--<field name="inherit_id" ref="account.view_move_line_form"/>-->
+    <!--<field name="arch" type="xml">-->
+    <!--<xpath expr="//sheet/notebook/page/group/group[1]/field[@name='debit']" position="after">-->
+    <!--<field name="debit_amount"/>-->
+    <!--</xpath>-->
+    <!--<xpath expr="//sheet/notebook/page/group/group[1]/field[@name='credit']" position="after">-->
+    <!--<field name="debit_amount"/>-->
+    <!--</xpath>-->
+
+    <!--</field>-->
+    <!--</record>-->
+
+    <!--<record id="view_inherit_account_move_line_tree" model="ir.ui.view">-->
+    <!--<field name="name">view.inherit.account.move.line.tree</field>-->
+    <!--<field name="model">account.move.line</field>-->
+    <!--<field name="inherit_id" ref="account.view_move_line_tree"/>-->
+    <!--<field name="arch" type="xml">-->
+    <!--<xpath expr="//tree/field[@name='debit']" position="after">-->
+    <!--<field name="debit_amount"/>-->
+    <!--</xpath>-->
+    <!--<xpath expr="//tree/field[@name='credit']" position="after">-->
+    <!--<field name="credit_amount"/>-->
+    <!--</xpath>-->
+
+    <!--</field>-->
+    <!--</record>-->
+
+</odoo>

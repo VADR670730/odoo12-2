@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <!--客户产品价格表查询 -->
+        <!-- 价格清单 -->
+        <record id="view_product_pricelist_list_tree" model="ir.ui.view">
+            <field name="name">product.pricelist.list.tree</field>
+            <field name="model">product.pricelist.list</field>
+            <field name="arch" type="xml">
+                <tree string="价格清单查询" create='0' edit="0" delete="0" editable="buttom" >
+                    <field name="pricelist_id"/>
+                    <field name="product_id"/>
+
+                    <field name="price"/>
+                    <field name="date_start"/>
+                    <field name="date_end"/>
+                    <field name="note"/>
+                </tree>
+            </field>
+        </record>
+
+        <record id="view_product_pricelist_list_form" model="ir.ui.view">
+            <field name="name">product.pricelist.list.form</field>
+            <field name="model">product.pricelist.list</field>
+            <field name="priority" eval="8"/>
+            <field name="arch" type="xml">
+                <form string="价格清单查询" edit="0" create="0" delete="0" >
+                    <sheet>
+                        <group col="2">
+                            <field name="pricelist_id"/>
+                            <field name="product_id"/>
+                            <field name="price"/>
+                            <field name="date_start"/>
+                            <field name="date_end"/>
+                            <field name="note"/>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <record id="view_product_pricelist_list_search" model="ir.ui.view">
+            <field name="name">product.pricelist.list.search</field>
+            <field name="model">product.pricelist.list</field>
+            <field name="arch" type="xml">
+                <search string="Search">
+                    <field name="pricelist_id" string="价格表" filter_domain="[('pricelist_id','ilike',self)]"/>
+                    <field name="product_id" string="产品" filter_domain="[('product_id','ilike',self)]"/>
+                    <separator/>
+                    <group expand="0" string="Group By...">
+                        <filter string="价格表" domain="[]" context="{'group_by':'pricelist_id'}"/>
+                        <filter string="产品" domain="[]" context="{'group_by':'product_id'}"/>
+                    </group>
+                </search>
+            </field>
+        </record>
+
+        <record model="ir.actions.act_window" id="action_product_pricelist_list">
+            <field name="name">价格清单查询</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">product.pricelist.list</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="search_view_id" ref="view_product_pricelist_list_search"/>
+            <!-- <field name="domain">[('field_name','condition',criteria)]</field> -->
+            <field name="context">{}</field>
+        </record>
+
+        <menuitem id="menu_product_pricelist_list"
+                  name="价格清单查询"
+                  groups="product.group_sale_pricelist"
+                  parent="sale.menu_product_pricelist_main"
+                  action="action_product_pricelist_list"/>
+    </data>
+</odoo>

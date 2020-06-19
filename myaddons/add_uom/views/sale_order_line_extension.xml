@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <record id="view_order_form_line_modify" model="ir.ui.view">
+        <field name="name">view.order.form.line.modify</field>
+        <field name="model">sale.order</field>
+        <field name="inherit_id" ref="sale.view_order_form"/>
+        <field name="arch" type="xml">
+
+            <xpath expr="//tree/field[@name='tax_id']" position="before">
+                <field name="product_sale_num" />
+                <field name="product_sale_unit" />
+                <field name="product_unit_conversion" invisible='1'/>
+
+            </xpath>
+            <xpath expr="//tree/field[@name='product_uom']" position="replace">
+                 <field
+                                        name="product_uom"
+                                        attrs="{
+                                            'readonly': [('state', 'in', ('draft','sale','done', 'cancel'))],
+                                            'required': [('display_type', '=', False)],
+                                        }"
+                                        context="{'company_id': parent.company_id}"
+                                        groups="uom.group_uom"
+                                        options='{"no_open": True}'
+                                    />
+            </xpath>
+
+            <xpath expr="//tree/field[@name='product_uom_qty']" position="replace">
+                    <field name="product_uom_qty"/>
+            </xpath>
+
+        </field>
+    </record>
+</odoo>

@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+
+    <record id="view_order_form_modify" model="ir.ui.view">
+        <field name="name">view.order.form.modify</field>
+        <field name="model">sale.order</field>
+        <field name="inherit_id" ref="sale.view_picking_form"/>
+        <field name="arch" type="xml">
+
+            <xpath expr="//field[@name='quantity_done']"
+                   position="after"
+            >
+                <field name="product_unit_num" />
+                <field name="product_unit" />
+                <field name="product_unit_conversion" />
+            </xpath>
+        </field>
+    </record>
+
+</odoo>

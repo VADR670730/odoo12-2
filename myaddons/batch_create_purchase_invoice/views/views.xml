@@ -1,0 +1,15 @@
+<odoo>
+  <data>
+   <odoo>
+<data>
+        <record id="action_create_invoice" model="ir.actions.server">
+        <field name="name">创建发票</field>
+        <field name="model_id" ref="purchase.model_purchase_order"/>
+        <field name="binding_model_id" ref="purchase.model_purchase_order"/>
+        <field name="state">code</field>
+        <field name="code">records.create_invoice()</field>
+    </record>
+  </data>
+</odoo>
+  </data>
+</odoo>

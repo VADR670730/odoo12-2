@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+<!--更新数据到价格表 -->
+        <record id="view_update_partner_product_wizard_form_wizard" model="ir.ui.view">
+            <field name="name">update.partner.product.wizard</field>
+            <field name="model">update.partner.product.wizard</field>
+            <field name="type">form</field>
+            <field name="priority" eval="8"/>
+            <field name="arch" type="xml">
+                <form string="">
+                    <label string='动作说明：将客户的（客户产品编码、客户产品名称）更新到客户的价格表中对应的产品信息。
+                                    （该操作无副作用，维护过"客户产品编码表"后建议执行一次）' style="color:#BC1717"/>
+                    <footer>
+                        <button name="action_update_all_pricelist" string="确定" class="oe_highlight" type="object"/>
+                        or
+                        <button string="取消" class="oe_link" special="cancel"/>
+                    </footer>
+                </form>
+            </field>
+        </record>
+        <!--&lt;!&ndash; 在tree view 动作中加一个button&ndash;&gt;-->
+        <!--<act_window id="open_mail_todo_list_ziward_action"-->
+                    <!--name="更新数据到价格表"-->
+                    <!--res_model="update.partner.product.wizard"-->
+                    <!--src_model="res.partner.product"-->
+                    <!--key2="client_action_multi"-->
+                    <!--target="new"-->
+                    <!--view_mode="form"-->
+                    <!--view_type="form"-->
+                    <!--view_id=""-->
+                    <!--domain="[()]"/>-->
+    </data>
+</odoo>

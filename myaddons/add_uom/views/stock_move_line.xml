@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <record id="view_stock_line_modify" model="ir.ui.view">
+        <field name="name">view.stock.line.modify</field>
+        <field name="model">stock.picking</field>
+        <field name="inherit_id" ref="stock.view_picking_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='product_uom']" position="after">
+
+                <!--<field name="product_unit_num" attrs="{'column_invisible': ['|','|',('parent .picking_type_id','!=',3),('parent.location_id','!=',13),('parent.origin','=',False)]}"/>-->
+                <!--<field name="product_unit" attrs="{'column_invisible': ['|','|',('parent.picking_type_id','!=',3),('parent.location_id','!=',13),('parent.origin','=',False)]}"/>-->
+                <field name="product_unit_num" attrs="{'column_invisible': ['|',('parent.location_dest_id','!=',9),('parent.origin','=',False)]}"/>
+                <!--<field name="product_sale_num" attrs="{'column_invisible': ['|',('parent.location_dest_id','!=',9),('parent.origin','=',False)]}"/>-->
+                <field name="product_unit" attrs="{'column_invisible': ['|',('parent.location_dest_id','!=',9),('parent.origin','=',False)]}"/>
+            </xpath>
+        </field>
+    </record>
+</odoo>

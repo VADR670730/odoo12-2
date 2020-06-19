@@ -1,0 +1,3 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_delivery_table,delivery.table,model_delivery_table,,1,1,1,1
+access_purchase.database.view,purchase.database.view,model_purchase_database_view,,1,1,1,1

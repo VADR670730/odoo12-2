@@ -1,0 +1,31 @@
+<odoo>
+    <data>
+
+        <record id="view_add_partial_inv" model="ir.ui.view">
+            <field name="name">view.add.partial.inv</field>
+            <field name="model">account.invoice</field>
+            <field name="inherit_id" ref="account.invoice_form"/>
+            <field name="arch" type="xml">
+
+                <xpath expr="//header/button[3]" position="attributes">
+                    <attribute name="string">登记收款</attribute>
+                </xpath>
+
+            </field>
+        </record>
+
+        <!--<record id="view_add_partial_inv2" model="ir.ui.view">-->
+            <!--<field name="name">view.add.partial.inv2</field>-->
+            <!--<field name="model">sale.order</field>-->
+            <!--<field name="inherit_id" ref="sale.view_order_form"/>-->
+            <!--<field name="arch" type="xml">-->
+                <!--<xpath expr="//header/button[@name='preview_sale_order']" position="before">-->
+                    <!--<button name='create_partial_invoice'-->
+                            <!--string="部分开票" type="object"-->
+                            <!--attrs="{'invisible': [('invoice_status', '!=', 'to invoice')]}"/>-->
+                <!--</xpath>-->
+            <!--</field>-->
+        <!--</record>-->
+
+    </data>
+</odoo>

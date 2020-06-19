@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record model="ir.ui.view" id="view_res_partner_form_inherit_price">
+            <field name="name">view.res.partner.form.inherit</field>
+            <field name="model">res.partner</field>
+            <field name="inherit_id" ref="product.view_partner_property_form"/>
+            <field name="arch" type="xml">
+                <button name="toggle_active" type="object" position="after">
+                    <button string="更新" name="action_update_property_product_pricelist2"
+                            groups="product.group_sale_pricelist"
+                            type="object" class="oe_highlight" icon="fa-check"/>
+                </button>
+                <field name="property_product_pricelist" position="before">
+
+                    <field name="property_product_pricelist1" groups="product.group_sale_pricelist"
+                           attrs="{'invisible': [('is_company','=',False),('parent_id','!=',False)]}"/>
+                    <field name="property_product_pricelist2" groups="product.group_sale_pricelist"
+                           attrs="{'invisible':True}"/>
+                </field>
+
+                <field name="property_product_pricelist" position="after">
+                    <field name="property_product_pricelist3" groups="product.group_sale_pricelist"
+                           attrs="{'invisible': [('is_company','=',False),('parent_id','!=',False)]}"/>
+                    <field name="not_show_in_product_pricelist" groups="product.group_sale_pricelist"/>
+                </field>
+                <page name='internal_notes' position="after">
+                    <page name="test_ids" string="拜访记录">
+                        <field name="test_ids" context="{'default_master_id': active_id}">
+                            <tree editable="buttom">
+                                <field name="partner_id" domain="[('parent_id','=',master_id),('type','=','contact')]"/>
+                                <field name="master_id" invisible="1"/>
+                            </tree>
+                        </field>
+                    </page>
+                </page>
+            </field>
+        </record>
+    </data>
+</odoo>

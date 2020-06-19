@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <data>
+        <record model="ir.ui.view" id="express_tree">
+            <field name="name">快递tree</field>
+            <field name="model">express</field>
+            <field name="arch" type="xml">
+                <tree>
+                    <field name="date"/>
+                    <field name="express_company"/>
+                    <field name="express_no"/>
+                    <field name="send_person" />
+                    <field name="weight"/>
+                    <field name="money"/>
+                    <field name="destination"/>
+                    <field name="remark"/>
+                </tree>
+            </field>
+        </record>
+
+        <record model="ir.ui.view" id="express_form">
+            <field name="name">快递form</field>
+            <field name="model">express</field>
+            <field name="arch" type="xml">
+                <form>
+                    <sheet>
+                        <field name="number" readonly="1"/>
+                        <group >
+                            <group>
+                            <field name="date"/>
+                            <field name="end_date"/>
+                            <field name="express_company"/>
+                            <field name="express_no"/>
+                            </group>
+                        <group>
+                            <field name="send_person"/>
+                            <field name="weight"/>
+                            <field name="money"/>
+                            <field name="destination"/>
+                            <field name="remark"/>
+                        </group>
+                        </group>
+                    </sheet>
+                    <div class="oe_chatter">
+                        <field name="message_follower_ids" widget="mail_followers"/>
+                        <field name="message_ids" widget="mail_thread"/>
+                    </div>
+                </form>
+            </field>
+        </record>
+
+        <record id="view_express_filter" model="ir.ui.view">
+            <field name="name">express</field>
+            <field name="model">express</field>
+            <field name="arch" type="xml">
+                <search string="Search 重量">
+<!--                    <field name="weight"-->
+<!--                           filter_domain="[('weight','ilike',self)]"/>-->
+                    <field name="send_person" string="寄件人"
+                           filter_domain="[('send_person','ilike',self)]"/>
+                    <field name="end_date" string="结束日期"
+                           filter_domain="[('end_date','ilike',self)]"/>
+                    <group string="Group By">
+                        <filter name="group_by_weight" string="结算重量"
+                                context="{'group_by':'weight'}"/>
+                        <filter name="group_by_date" string="寄件日期"
+                                context="{'group_by':'date'}"/>
+                        <filter name="group_by_destination" string="目的地"
+                                context="{'group_by':'destination'}"/>
+                        <filter name="group_by_express_company" string="快递公司"
+                                context="{'group_by':'express_company'}"/>
+                        <filter name="group_by_send_person" string="寄件人"
+                                context="{'group_by':'send_person'}"/>
+                    </group>
+                </search>
+            </field>
+        </record>
+
+        <record id="view_express_pivot" model="ir.ui.view">
+        <field name="name">express.pivot</field>
+        <field name="model">express</field>
+        <field name="arch" type="xml">
+            <pivot string="Work Center Loads">
+                <field name="date" type="row"/>
+                <field name="send_person" type="row"/>
+                <field name="weight" type="measure"/>
+                <field name="money" type="measure"/>
+                <field name="express_company" type="col"/>
+                <field name="destination" type="col"/>
+            </pivot>
+        </field>
+        </record>
+
+        <record id="express_view_gantt" model="ir.ui.view">
+            <field name="name">express.gantt</field>
+            <field name="model">express</field>
+            <field name="arch" type="xml">
+                <gantt  date_start="date" date_stop="end_date" string="money" default_group_by="send_person">
+                </gantt>
+            </field>
+        </record>
+
+        <record id="express_view_graph" model="ir.ui.view">
+        <field name="name">express.graph</field>
+        <field name="model">express</field>
+        <field name="arch" type="xml">
+            <graph string="express interface">
+                <field name="date"/>
+                <field name="money"/>
+            </graph>
+        </field>
+        </record>
+
+        <record model="ir.actions.act_window" id="action_express">
+            <field name="name">快递</field>
+            <field name="res_model">express</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form,pivot,gantt,graph</field>
+        </record>
+
+         <menuitem id="menu_express"
+                   name="快递模板"
+                   action="action_express"
+                   sequence="1"/>
+    </data>
+</odoo>

@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <record id="view_product_pricelist_modify" model="ir.ui.view">
+        <field name="name">view.product.pricelist.modify</field>
+        <field name="model">product.pricelist.item</field>
+        <field name="inherit_id" ref="product.product_pricelist_item_form_view"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='date_end']" position="after">
+                    <field name="product_measuring_unit" />
+            </xpath>
+        </field>
+    </record>
+
+
+
+    <record id="view_product_pricelist_modify_ids" model="ir.ui.view">
+        <field name="name">view.stock.line.modify.ids</field>
+        <field name="model">product.pricelist</field>
+        <field name="inherit_id" ref="product.product_pricelist_view"/>
+        <field name="arch" type="xml">
+
+            <xpath expr="//field[@name='date_end']" position="after">
+                <field name="product_sale_uom" />
+            </xpath>
+        </field>
+    </record>
+</odoo>

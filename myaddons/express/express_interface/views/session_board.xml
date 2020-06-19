@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+       <!--1:通过action打开一个模型的图形视图-->
+        <record model="ir.actions.act_window" id="act_session_graph">
+            <field name="name">graph</field>
+            <field name="res_model">express</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">graph</field>
+            <field name="view_id" ref="express_form"/>
+        </record>
+
+        <!--2:通过action打开饼状图-->
+        <record model="ir.actions.act_window" id="act_course_list">
+            <field name="name">Courses</field>
+            <field name="res_model">express</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+
+        <!--3:通过action打开模型透视图-->
+        <record model="ir.actions.act_window" id="act_course_pivot">
+            <field name="name">pivot</field>
+            <field name="res_model">express</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">pivot</field>
+            <field name="view_id" ref="express_form"/>
+        </record>
+
+       <!--上述action们都是仪表盘各项内容的来源-->
+
+        <!--定义仪表板视图-->
+        <record model="ir.ui.view" id="board_session_form">
+            <field name="name">Dashboard</field>
+            <field name="model">board.board</field>
+            <field name="type">form</field>
+            <field name="arch" type="xml">
+                <form string="仪表盘">
+                    <board style="2-1">
+                        <column>
+                            <action
+                                string="图表一"
+                                name="%(act_session_graph)d"
+                                height=""
+                                width=""/>
+                            <action
+                                string="图表二"
+                                name="%(act_course_pivot)d"
+                                />
+                            <action
+                                string="图表三"
+                                name="%(act_course_list)d"/>
+                        </column>
+                    </board>
+                </form>
+            </field>
+        </record>
+
+       <!--定义动作打开仪表板视图-->
+        <record model="ir.actions.act_window" id="open_board">
+          <field name="name">Dashboard</field>
+          <field name="res_model">board.board</field>
+          <field name="view_type">form</field>
+          <field name="view_mode">form</field>
+          <field name="usage">menu</field>
+          <field name="view_id" ref="board_session_form"/>
+        </record>
+
+        <!--定义菜单项，打开仪表盘的action-->
+        <menuitem
+            name="快递分析"
+            parent="menu_express"
+            action="open_board"
+            id="menu_board"
+            sequence="2"
+            />
+    </data>
+</odoo>

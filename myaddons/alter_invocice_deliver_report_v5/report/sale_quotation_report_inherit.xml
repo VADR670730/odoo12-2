@@ -1,0 +1,178 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="report_saleorder_document_inherit" inherit_id="sale.report_saleorder_document">
+            <xpath expr="//t[@t-set='address']" position="replace"></xpath>
+            <xpath expr="//t[@t-if='doc.partner_shipping_id == doc.partner_invoice_id
+                             and doc.partner_invoice_id != doc.partner_id
+                             or doc.partner_shipping_id != doc.partner_invoice_id']" position="replace"></xpath>
+            <xpath expr="//div[hasclass('page')]" position="replace">
+            <div class="page" style="margin-top:20px;">
+                <div class="oe_structure"/>
+                <h2 class="text-center">
+                    <!--<span t-if="doc.state not in ['draft','sent']">Sale Order</span>-->
+                    <span t-if="doc.state not in ['draft','sent']">INVOICE</span>
+                    <span t-if="doc.state in ['draft','sent']">Quotation</span>
+                </h2>
+                <div style="font-size:13px;">
+                <div class="row">
+                    <div class="col-6">
+                        <strong class="mr16">Customer:</strong>
+                        <span t-field="doc.partner_id"/>
+                    </div>
+                    <div class="col-6">
+                        <strong>Invoice No:</strong>
+                           <span t-field="doc.name"/>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-6">
+                        <strong class="mr16">Address:</strong>
+                        <span t-field="doc.partner_invoice_id.street2"/>
+                    </div>
+                    <div class="col-6">
+                        <t t-if="doc.state in ['draft','sent']">
+                        <strong class="mr16" >Validity Date:</strong>
+                        <span t-field="doc.validity_date"/>
+                        </t>
+                        <t t-if="doc.state not in ['draft','sent']">
+                        <strong class="mr16" >Order Date:</strong>
+                        <span t-field="doc.confirmation_date"/>
+                        </t>
+                    </div>
+                </div>
+                <div class="row">
+                    <!--<div class="col-6">-->
+                        <!--<strong class="mr16">Shipping To:</strong>-->
+                        <!--<span t-field="doc.partner_shipping_id"/>-->
+                    <!--</div>-->
+                    <div class="col-6">
+                        <strong class="mr16">Delivery Date:</strong>
+                        <span t-field="doc.commitment_date"/>
+                    </div>
+                    <div class="col-6">
+                        <strong class="mr16">PO No:</strong>
+                        <span t-field="doc.client_order_ref"/>
+                    </div>
+
+                </div>
+                <div class="row">
+
+                    <div class="col-6">
+                        <strong class="mr16">Payment:</strong>
+                        <span t-field="doc.payment_term_id"/>
+                    </div>
+                    <div class="col-6">
+                        <strong>Guest code:</strong>
+                        <span t-field="doc.x_guest_supplier_code"/>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-6">
+                        <strong>Gross:</strong>
+                        <t t-if="doc.is_gross == False">
+                            <span>NO</span>
+                        </t>
+                        <t t-if="doc.is_gross == True">
+                            <span>YES</span>
+                        </t>
+                    </div>
+                    <div class="col-6">
+                        <strong>Warehouse No:</strong>
+                        <span t-field="doc.x_customer_designated_positions"/>
+                    </div>
+                </div>
+                </div>
+                <table style="font-size: 12px; width: 100%; margin: 10px 0; border-collapse: collapse;">
+                    <thead>
+                        <tr>
+                            <th style="border: 1px solid #000; padding: 5px; font-size: 14px;" class="text-center">產品名稱</th>
+                            <th style="border: 1px solid #000; padding: 5px; font-size: 14px;" class="text-center">數量</th>
+                            <th style="border: 1px solid #000; padding: 5px; font-size: 14px;" class="text-center">單價</th>
+                            <th style="border: 1px solid #000; padding: 5px; font-size: 14px;" class="text-center">TD%</th>
+                            <th style="border: 1px solid #000; padding: 5px; font-size: 14px;" class="text-center">PD%</th>
+                            <th style="border: 1px solid #000; padding: 5px; font-size: 14px;" class="text-center">IO%</th>
+                            <th style="border: 1px solid #000; padding: 5px; font-size: 14px;" class="text-center">OT%</th>
+                            <th style="border: 1px solid #000; padding: 5px; font-size: 14px;" class="text-center">價格</th>
+                        </tr>
+                    </thead>
+                    <tbody class="sale_tbody">
+                        <tr t-foreach="doc.order_line" t-as="l">
+
+                                <td style="border: 1px solid #000; padding: 5px">
+                                    <span t-field="l.product_id"/>
+                                </td>
+                                <td style="border: 1px solid #000; padding: 5px" class="text-right">
+                                    <span t-esc="int(l.product_uom_qty)"/>
+                                    <span t-field="l.product_uom"/>
+                                </td>
+                                <td style="border: 1px solid #000; padding: 5px" class="text-right">
+                                    <span t-field="l.price_unit"
+                                          t-options='{"widget": "monetary", "display_currency": l.product_id.pricelist_id.currency_id}'/>
+                                </td>
+                                <td style="border: 1px solid #000; padding: 5px" class="text-right">
+                                    <span t-esc="int(l.discount_td)"/>
+                                </td>
+                                <td style="border: 1px solid #000; padding: 5px" class="text-right">
+                                    <span t-esc="int(l.discount_pd)"/>
+                                </td>
+                                <td style="border: 1px solid #000; padding: 5px" class="text-right">
+                                    <span t-esc="int(l.discount_io)"/>
+                                </td>
+                                <td style="border: 1px solid #000; padding: 5px" class="text-right">
+                                    <span t-esc="int(l.discount_ot)"/>
+                                </td>
+                                <td style="border: 1px solid #000; padding: 5px" class="text-right">
+                                    <span t-field="l.price_subtotal"
+                                          t-options='{"widget": "monetary", "display_currency": l.product_id.pricelist_id.currency_id}'/>
+                                </td>
+
+                        </tr>
+                    </tbody>
+                </table>
+                <div class="clearfix">
+                    <div id="total" class="row" name="total">
+                        <div t-attf-class="#{'col-4' if report_type != 'html' else 'col-sm-7 col-md-5'} ml-auto">
+                            <table class="table table-sm">
+
+                                <tr class="border-black o_total">
+                                    <td>
+                                        <strong>Total</strong>
+                                    </td>
+                                    <td class="text-right">
+                                        <span t-field="doc.amount_total"/>
+                                    </td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row" style="font-size:13px;margin-top:16px;">
+                    <div class="col-8">
+                        <div>1) OVERDUE BALANCE WILL CHARGE INTEREST 1.5% PER MONTH.</div>
+                        <div>2) ANY CLAIMS OR COMPLAINTS REGARDING THE ABOVE DELIVERED GOODS MUST BE MADE IN WRITING
+                            WITHIN 7 DAYS.
+                        </div>
+                        <div>3) NO PAYMENT RECOGNIZED EXCEPT AGAINST OFFICIAL RECEIPT.</div>
+                        <h4 style="text-decoration: underline">BANK A/C</h4>
+                        <div>
+                            <span style="font-weight: 900">A/C NAME:</span>
+                            <span>Mega Combine Company Ltd</span>
+                        </div>
+                        <div>
+                            <span style="font-weight: 900">BANK:</span>
+                            <span>Hang Seng Bank</span>
+                        </div>
+                        <div>
+                            <span style="font-weight: 900">A/C NO:</span>
+                            <span>390-644706-883</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            </xpath>
+    </template>
+    
+</odoo>
+
+

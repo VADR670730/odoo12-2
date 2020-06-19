@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+
+    <record id="view_stock_checked" model="ir.ui.view">
+        <field name="name">view.stock.checked</field>
+        <field name="model">stock.picking</field>
+        <field name="inherit_id" ref="stock.view_picking_form"/>
+        <field name="arch" type="xml">
+
+            <xpath expr="//field[@name='state']" position="replace">
+                <field name="state" widget="statusbar"
+                       statusbar_visible="draft,confirmed,partially_available,assigned,done,checked"/>
+            </xpath>
+
+            <xpath expr="//field[@name='picking_type_entire_packs']" position="after">
+                <button name="action_checked" string="已检查" type="object" groups="base.group_user"
+                        attrs="{'invisible': ['|', ('state', 'in', ('draft','cancel','waiting', 'confirm', 'assigned', 'checked'))]}"/>
+                <button name="action_cancel_checked" string="取消检查" type="object" groups="base.group_user"
+                        attrs="{'invisible': ['|', ('state', 'in', ('draft','cancel','waiting', 'confirm', 'done', 'assigned'))]}"/>
+            </xpath>
+
+            <xpath expr="//sheet/group/group[2]/field[@name='date_done']" position="replace">
+                <field name="date_done" string="生效日期"
+                       attrs="{'invisible': [('state', '!=', 'done'),('state', '!=', 'checked')]}"/>
+            </xpath>
+
+        </field>
+    </record>
+
+    <record id="view_stock_checked_search" model="ir.ui.view">
+        <field name="name">view.stock.checked.search</field>
+        <field name="model">stock.picking</field>
+        <field name="inherit_id" ref="stock.view_picking_internal_search"/>
+        <field name="arch" type="xml">
+
+            <xpath expr="//field[@name='name']" position="after">
+                <filter name="checked" string="已检查" domain="[('state','=','checked')]"/>
+            </xpath>
+        </field>
+    </record>
+
+    <!--<record id="view_stock_checked_location" model="ir.ui.view">-->
+        <!--<field name="name">view.stock.checked.location</field>-->
+        <!--<field name="model">stock.picking</field>-->
+        <!--<field name="inherit_id" ref="stock.view_picking_form"/>-->
+        <!--<field name="arch" type="xml">-->
+            <!--<xpath expr="//sheet/group/group[1]/field[@name='location_id']" position="replace">-->
+                <!--<field name="location_id" groups="stock.group_stock_multi_locations" attrs="{'readonly': [('state', 'in', ('done', 'cancel'))]}"/>-->
+            <!--</xpath>-->
+        <!--</field>-->
+    <!--</record>-->
+</odoo>

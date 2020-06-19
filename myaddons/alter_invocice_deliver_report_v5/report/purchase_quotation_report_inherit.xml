@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="report_purchaseorder_document_inherit" inherit_id="purchase.report_purchaseorder_document">
+            <xpath expr="//t[@t-set='address']" position="replace"></xpath>
+            <xpath expr="//t[@t-if='o.dest_address_id']" position="replace"></xpath>
+            <xpath expr="//div[hasclass('page')]" position="replace">
+            <div class="page" style="margin-top:20px;">
+                <div class="oe_structure"/>
+                <h2 class="text-center">
+                    <span>Purchase Order</span>
+                </h2>
+                <div style="font-size:13px;">
+                <div class="row">
+                    <div class="col-6">
+                        <strong class="mr16">Vendor:</strong>
+                        <span t-field="o.partner_id"/>
+                    </div>
+                    <div class="col-6">
+                        <strong>PO No:</strong>
+                           <span t-field="o.name"/>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-6">
+                        <strong class="mr16">Currency:</strong>
+                        <span t-field="o.currency_id"/>
+                    </div>
+                    <div class="col-6">
+                        <strong class="mr16" >Order Date:</strong>
+                        <span t-field="o.date_order"/>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-6">
+                        <strong class="mr16">Vendor Reference:</strong>
+                        <span t-field="o.partner_ref"/>
+                    </div>
+                    <div class="col-6">
+                        <strong class="mr16">Scheduled Date:</strong>
+                        <span t-field="o.date_planned"/>
+                    </div>
+                </div>
+                </div>
+
+                <table style="font-size: 12px; width: 100%; margin: 10px 0; border-collapse: collapse;">
+                    <thead>
+                        <tr>
+                            <th style="border: 1px solid #000; padding: 5px" class="text-center">產品名稱</th>
+                            <th style="border: 1px solid #000; padding: 5px" class="text-center">條碼</th>
+                            <th style="border: 1px solid #000; padding: 5px" class="text-center">Scheduled Date</th>
+                            <th style="border: 1px solid #000; padding: 5px" class="text-center">數量</th>
+                            <th style="border: 1px solid #000; padding: 5px" class="text-center">單價</th>
+                            <th style="border: 1px solid #000; padding: 5px" class="text-center">價格</th>
+                        </tr>
+                    </thead>
+                    <tbody class="sale_tbody">
+                        <tr t-foreach="o.order_line" t-as="l">
+                                <td style="border: 1px solid #000; padding: 5px">
+                                    <span t-field="l.product_id"/>
+                                </td>
+                                <td style="border: 1px solid #000; padding: 5px" class="text-center">
+                                    <span t-field="l.product_id.barcode"/>
+                                </td>
+                                <td style="border: 1px solid #000; padding: 5px" class="text-center">
+                                    <span t-field="l.date_planned"/>
+                                </td>
+                                <td style="border: 1px solid #000; padding: 5px" class="text-right">
+                                    <span t-esc="int(l.product_qty)"/>
+                                    <span t-field="l.product_uom"/>
+                                </td>
+                                <td style="border: 1px solid #000; padding: 5px" class="text-right">
+                                    <span t-field="l.price_unit"
+                                          t-options='{"widget": "monetary", "display_currency": l.product_id.pricelist_id.currency_id}'/>
+                                </td>
+                                <td style="border: 1px solid #000; padding: 5px" class="text-right">
+                                    <span t-field="l.price_subtotal"
+                                          t-options='{"widget": "monetary", "display_currency": l.product_id.pricelist_id.currency_id}'/>
+                                </td>
+                        </tr>
+                    </tbody>
+                </table>
+                <div class="clearfix">
+                    <div id="total" class="row" name="total">
+                        <div t-attf-class="#{'col-4' if report_type != 'html' else 'col-sm-7 col-md-5'} ml-auto">
+                            <table class="table table-sm">
+
+                                <tr class="border-black o_total">
+                                    <td>
+                                        <strong>Total</strong>
+                                    </td>
+                                    <td class="text-right">
+                                        <span t-field="o.amount_total"/>
+                                    </td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row" style="font-size:13px;margin-top:16px;">
+                    <div class="col-8">
+                        <div>1) OVERDUE BALANCE WILL CHARGE INTEREST 1.5% PER MONTH.</div>
+                        <div>2) ANY CLAIMS OR COMPLAINTS REGARDING THE ABOVE DELIVERED GOODS MUST BE MADE IN WRITING
+                            WITHIN 7 DAYS.
+                        </div>
+                        <div>3) NO PAYMENT RECOGNIZED EXCEPT AGAINST OFFICIAL RECEIPT.</div>
+                        <h4 style="text-decoration: underline">BANK A/C</h4>
+                        <div>
+                            <span style="font-weight: 900">A/C NAME:</span>
+                            <span>Mega Combine Company Ltd</span>
+                        </div>
+                        <div>
+                            <span style="font-weight: 900">BANK:</span>
+                            <span>Hang Seng Bank</span>
+                        </div>
+                        <div>
+                            <span style="font-weight: 900">A/C NO:</span>
+                            <span>390-644706-883</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            </xpath>
+    </template>
+    
+</odoo>
+
+

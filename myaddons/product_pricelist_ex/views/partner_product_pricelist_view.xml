@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <!--客户产品价格表查询 -->
+        <record id="view_partner_product_pricelist_tree" model="ir.ui.view">
+            <field name="name">partner.product.pricelist.tree</field>
+            <field name="model">partner.product.pricelist</field>
+            <field name="arch" type="xml">
+                <tree string="客户产品价格表查询" edit="0" create="0" delete="0" editable="buttom">
+                    <field name="partner_id"/>
+                    <field name="partner_product_id"/>
+                    <field name="product_id"/>
+                    <field name="price_11"/>
+                    <field name="discount_price_2" invisible="1"/>
+                    <field name="discount_price_22"/>
+                    <field name="price_22"/>
+                    <field name="discount_price_3" invisible="1"/>
+                    <field name="discount_price_33"/>
+                    <field name="price_33"/>
+
+                    <field name="date_start"/>
+                    <field name="date_end"/>
+                </tree>
+            </field>
+        </record>
+
+        <record model="ir.ui.view" id="view_partner_product_pricelist_form">
+            <field name="name">partner.product.pricelist.form</field>
+            <field name="model">partner.product.pricelist</field>
+            <field name="type">form</field>
+            <field name="arch" type="xml">
+                <form string="客户产品价格表查询"  create='0' edit="0" delete="0">
+                    <sheet>
+                        <group col="2">
+                            <field name="partner_id"/>
+                            <field name="partner_product_id"/>
+                            <field name="product_id"/>
+                            <field name="price_11"/>
+                            <field name="discount_price_2"/>
+                            <field name="price_22"/>
+                            <field name="discount_price_3"/>
+
+                            <field name="price_33"/>
+                            <field name="date_start"/>
+                            <field name="date_end"/>
+                        </group>
+
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <record id="view_partner_product_pricelist_search" model="ir.ui.view">
+            <field name="name">partner.product.pricelist.search</field>
+            <field name="model">partner.product.pricelist</field>
+            <field name="arch" type="xml">
+                <search string="Search">
+                    <field name="partner_id" string="客户" filter_domain="[('partner_id.name','ilike',self)]"/>
+                    <field name="partner_product_id" string="客户产品"
+                           filter_domain="['|',('partner_product_id.code','ilike',self),('partner_product_id.name','ilike',self)]"/>
+                    <field name="product_id" string="我司产品"
+                           filter_domain="['|',('product_id.name','ilike',self),('product_id.default_code','ilike',self)]"/>
+                    <separator/>
+
+                    <group expand="0" string="Group By...">
+                        <filter string="客户" domain="[('partner_id.customer','=',True)]" context="{'group_by':'partner_id'}"/>
+                        <filter string="客户产品" domain="[]" context="{'group_by':'partner_product_id'}"/>
+                        <filter string="我司产品" domain="[]" context="{'group_by':'product_id'}"/>
+                    </group>
+                </search>
+            </field>
+        </record>
+
+        <record model="ir.actions.act_window" id="action_partner_product_pricelist">
+            <field name="name">客户产品价格表查询</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">partner.product.pricelist</field>
+            <field name="limit">40</field>
+
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="search_view_id" ref="view_partner_product_pricelist_search"/>
+            <!-- <field name="domain">[('field_name','condition',criteria)]</field> -->
+            <field name="context">{}</field>
+        </record>
+
+        <menuitem id="menu_partner_product_pricelist"
+                  name="客户产品价格表查询"
+                  sequence="30"
+                  groups="product.group_sale_pricelist"
+                  parent="sale.menu_product_pricelist_main"
+                  action="action_partner_product_pricelist"/>
+
+    </data>
+</odoo>

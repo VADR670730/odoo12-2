@@ -1,0 +1,9 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_res_partner_product,res.partner.product,model_res_partner_product,,1,1,1,1
+access_product_pricelist_list,product.pricelist.list,model_product_pricelist_list,,1,1,1,1
+
+
+
+
+
+

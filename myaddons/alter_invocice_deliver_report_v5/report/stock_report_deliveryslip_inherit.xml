@@ -1,0 +1,155 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="report_delivery_document_inherit" inherit_id="stock.report_delivery_document">
+        <xpath expr="//t[@t-set='o']" position="replace">
+            <t t-set="doc" t-value="o.with_context({'lang':o.partner_id.lang})"/>
+        </xpath>
+        <xpath expr="//t[@t-if='o.move_lines and o.move_lines[0].partner_id']" position="replace">
+        </xpath>
+        <xpath expr="//t[@t-if='not (o.move_lines and o.move_lines[0].partner_id) and o.partner_id']" position="replace">
+        </xpath>
+        <xpath expr="//div[hasclass('page')]" position="replace">
+            <div class="page">
+                <t t-if="doc.picking_type_code in ['incoming','internal','mrp_operation']">
+                <h3 class="text-center">Receiving Note</h3>
+                </t>
+                <t t-if="doc.picking_type_code == 'outgoing'">
+                    <h3 class="text-center">Delivery Note</h3>
+                </t>
+                <div style="font-size:13px;">
+                <div class="row">
+                    <div class="col-6">
+                        <strong>Customer:</strong>
+                    <span t-field="doc.partner_id"/>
+                    </div>
+                    <!--<div class="col-6">-->
+                        <!--<strong>Delivery No:</strong>-->
+                        <!--<span t-field="doc.name"/>-->
+                    <!--</div>-->
+                    <div class="col-6">
+                        <t t-if="doc.picking_type_code == 'outgoing'">
+                        <strong>Invoice No:</strong>
+                        <span t-field="doc.origin"/>
+                        </t>
+                        <t t-if="doc.picking_type_code in ['incoming','internal','mrp_operation']">
+                        <strong>Invoice No:</strong>
+                        <span t-field="doc.origin"/>
+                        </t>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-6">
+                        <strong>Address:</strong>
+                        <t t-if="doc.picking_type_code == 'outgoing'">
+                            <span t-field="doc.sale_id.partner_shipping_id.street"/>
+                        </t>
+                        <t t-if="doc.picking_type_code in ['incoming','internal','mrp_operation']">
+                            <span t-field="doc.location_dest_id.display_name"/>
+                        </t>
+                    </div>
+                    <div class="col-6">
+                        <t t-if="doc.picking_type_code == 'outgoing'">
+                        <strong>Delivery Date:</strong>
+                        <span t-field="doc.scheduled_date"/>
+                        </t>
+                        <t t-if="doc.picking_type_code in ['incoming','internal','mrp_operation']">
+                        <strong>Receiving Date:</strong>
+                        <span t-field="doc.scheduled_date"/>
+                        </t>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-6">
+                        <t t-if="doc.picking_type_code == 'outgoing'">
+                        <strong>PO No:</strong>
+                        <span t-field="doc.sale_id.client_order_ref"/>
+                        </t>
+                        <t t-if="doc.picking_type_code in ['incoming','internal','mrp_operation']">
+                        <strong>SO No:</strong>
+                        <span t-field="doc.purchase_id.partner_ref"/>
+                        </t>
+                    </div>
+                    <div class="col-6">
+                        <t t-if="doc.picking_type_code == 'outgoing'">
+                        <strong>SO Date:</strong>
+                        <span t-field="doc.sale_id.date_order"/>
+                        </t>
+                        <t t-if="doc.picking_type_code in ['incoming','internal','mrp_operation']">
+                        <strong>PO Date:</strong>
+                        <span t-field="doc.purchase_id.date_order"/>
+                        </t>
+                    </div>
+                </div>
+                <div class="row">
+
+                    <t t-if="doc.picking_type_code == 'outgoing'">
+                    <div class="col-6">
+                        <strong>Guest code:</strong>
+                        <span t-field="doc.sale_id.x_guest_supplier_code"/>
+                    </div>
+                    </t>
+                </div>
+                </div>
+                <table style="border: 1px solid #000; font-size: 13px; width: 100%; margin: 10px 0;">
+                    <thead>
+                        <tr style="height: 30px; line-height: 30px;">
+                            <th style="border-right: 1px solid #000" class="text-center">
+                                <strong>產品名稱</strong>
+                            </th>
+                            <th style="border-right: 1px solid #000" class="text-center">
+                                <strong>條碼</strong>
+                            </th>
+                            <th style="border-right: 1px solid #000" class="text-center">
+                                <strong>數量</strong>
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr t-foreach="doc.move_ids_without_package" t-as="order_list"
+                            style="border-top: 1px solid #000; height: 30px; line-height: 30px;">
+
+                            <td style="border-right: 1px solid #000; border-top: 1px solid #000">
+                                <span t-field="order_list.product_id"/>
+                            </td>
+                            <td style="border-right: 1px solid #000; border-top: 1px solid #000" class="text-center">
+                                <span t-field="order_list.product_id.barcode"/>
+                            </td>
+
+                            <td style="border-right: 1px solid #000; border-top: 1px solid #000" class="text-center">
+                                <span t-esc="int(order_list.quantity_done)"/>
+                                <span t-field="order_list.product_uom"/>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+                <div class="row" style="font-size:16px;margin-top:15px;">
+                    <div class="col-8">
+                        <div>RECEIVE BY:</div>
+                        <div>CHOP AND SIGNATURE:</div>
+
+                        <!--<div>1) OVERDUE BALANCE WILL CHARGE INTEREST 1.5% PER MONTH.</div>-->
+                        <!--<div>2) ANY CLAIMS OR COMPLAINTS REGARDING THE ABOVE DELIVERED GOODS MUST BE MADE IN WRITING-->
+                            <!--WITHIN 7 DAYS.-->
+                        <!--</div>-->
+                        <!--<div>3) NO PAYMENT RECOGNIZED EXCEPT AGAINST OFFICIAL RECEIPT.</div>-->
+                        <!--<h4 style="text-decoration: underline">BANK A/C</h4>-->
+                        <!--<div>-->
+                            <!--<span style="font-weight: 900">A/C NAME:</span>-->
+                            <!--<span>Mega Combine Company Ltd</span>-->
+                        <!--</div>-->
+                        <!--<div>-->
+                            <!--<span style="font-weight: 900">BANK:</span>-->
+                            <!--<span>Hang Seng Bank</span>-->
+                        <!--</div>-->
+                        <!--<div>-->
+                            <!--<span style="font-weight: 900">A/C NO:</span>-->
+                            <!--<span>390-644706-883</span>-->
+                        <!--</div>-->
+                    </div>
+                </div>
+            </div>
+        </xpath>
+    </template>
+</odoo>
+
+

@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <template id="stock_layout_standard">
+        <!--page head-->
+        <div class="header" style="padding-top:30px">
+            <div class="o_background_header" style="font-size: 10px;">
+
+                <div class="float-left company_address" style="font-weight: bolder; font-size: 25px;">
+                    <p t-esc="(datetime.datetime.now()+datetime.timedelta(hours=8)).strftime('%Y-%m-%d %H:%M')"
+                       style="max-height: 40px; font-weight: bolder; font-size: 20px; "
+                       class="m-0"/>
+                </div>
+
+                <div style="margin-left: 1300px; font-weight: bolder; font-size: 20px; ">
+                    <p t-field="res_company.name"/>
+                </div>
+
+                <div style="border-top: 1px solid black;"></div>
+            </div>
+
+            <t t-foreach="docs" t-as="o">
+                <div class="row" style="margin-left:2.5px; margin-top: 10px">
+                    <span t-field="o.name" style="font-size: 30px; "/>
+
+                    <div class="col-4" name="right_box" style="margin-left: 1000px;">
+                        <img t-att-src="'/report/barcode/?type=%s&amp;value=%s&amp;width=%s&amp;height=%s' % ('Code128', o.name, 600, 100)"
+                             style="width:300px;height:60px;" alt="Barcode"/>
+                    </div>
+                </div>
+            </t>
+
+        </div>
+
+        <!--content-->
+        <div class="article o_report_layout_standard" t-att-data-oe-model="o and o._name"
+             t-att-data-oe-id="o and o.id" t-att-data-oe-lang="o and o.env.context.get('lang')">
+            <t t-call="web.address_layout"/>
+            <t t-raw="0"/>
+        </div>
+
+        <!--page tail-->
+        <div class="footer o_standard_footer" style="padding-bottom:30px">
+            <div class="row" style="margin-bottom:25px;">
+                <div style="width: 28%; margin-left: 20px">商务部:</div>
+                <div style="width: 28%;">仓库部:</div>
+                <div style="width: 28%;">财务部:</div>
+                <div style="width: 28%;">发货部:</div>
+            </div>
+
+            <div class="text-center" style="border-top: 1px solid black;">
+                <div class="text-muted" style="margin-top:10px;">
+                    <ul class="list-inline">
+                        第
+                        <span class="page"/>
+                        页
+                        /
+                        共
+                        <span class="topage"/>
+                        页
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </template>
+
+</odoo>

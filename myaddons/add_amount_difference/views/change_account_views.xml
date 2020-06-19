@@ -1,0 +1,130 @@
+<odoo>
+    <data>
+
+        <!--更改发票的登记收付款按钮隐藏显示-->
+        <record id="add_amount_difference" model="ir.ui.view">
+            <field name="name">add.amount.difference</field>
+            <field name="model">account.invoice</field>
+            <field name="inherit_id" ref="account.invoice_form"/>
+            <field name="arch" type="xml">
+
+                <xpath expr="//header/button[@id='account_invoice_payment_btn']" position="attributes">
+                    <attribute name="attrs">{'invisible': ['|',('state', '!=', 'open'), ('type', '=', 'out_invoice')]}
+                    </attribute>
+                </xpath>
+                <xpath expr="//header/button[@id='account_invoice_payment_btn']" position="after">
+                    <button name="action_register_inbound_payment" id="inbound_invoice_payment_btn" type="object"
+                            attrs="{'invisible': ['|', ('state', '!=', 'open'), ('type', '=', 'in_invoice')]}"
+                            string="登记收款" groups="account.group_account_invoice" class="oe_highlight"/>
+                </xpath>
+            </field>
+        </record>
+
+        <!--更改account_payment收付款验证按钮的隐藏显示-->
+        <record id="form_inherit_payment" model="ir.ui.view">
+            <field name="name">form.inherit.payment</field>
+            <field name="model">account.payment</field>
+            <field name="inherit_id" ref="account.view_account_payment_invoice_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//footer/button[@name='action_validate_invoice_payment']" position="attributes">
+                    <attribute name="attrs">{'invisible': [('payment_type', '=', 'inbound')]}</attribute>
+                </xpath>
+                <xpath expr="//footer/button[@name='action_validate_invoice_payment']" position="after">
+                    <button string='验证' name="action_validate_inbound_payment" type="object" class="btn-primary"
+                            attrs="{'invisible': [('payment_type', '=', 'outbound')]}"/>
+                </xpath>
+            </field>
+        </record>
+
+        <!--更改收付款时的form视图显示-->
+        <!--<record id="view_inbound_payment" model="ir.ui.view">-->
+            <!--<field name="name">view.inbound.payment</field>-->
+            <!--<field name="model">account.payment</field>-->
+            <!--<field name="inherit_id" ref="account.view_account_payment_form"/>-->
+            <!--<field name="arch" type="xml">-->
+                <!--<xpath expr="/form/sheet/group/group/field[@name='destination_journal_id']" position="after">-->
+                    <!--<label for="self_amount" invisible="1"/>-->
+                    <!--<div name="self_amount" class="o_row" invisible="1">-->
+                        <!--<field name="self_amount"/>-->
+                        <!--<field name="unit_id" options="{'no_create': True, 'no_open': True}"-->
+                               <!--groups="base.group_multi_currency" attrs="{'readonly': [('state', '!=', 'draft')]}"/>-->
+                    <!--</div>-->
+                <!--</xpath>-->
+
+            <!--</field>-->
+        <!--</record>-->
+
+        <record id="view_inbound_payment" model="ir.ui.view">
+            <field name="name">view.inbound.payment2</field>
+            <field name="model">account.payment</field>
+            <field name="inherit_id" ref="account.view_account_payment_invoice_form"/>
+            <field name="arch" type="xml">
+                <!--<xpath expr="/form/sheet/group/group[1]/div" position="after">-->
+                    <!--<field name="self_amount" attrs="{'invisible': [('payment_type', '=', 'outbound')]}"/>-->
+                <!--</xpath>-->
+
+                <xpath expr="/form/sheet/group/group[3]" position="replace">
+                </xpath>
+
+                <xpath expr="/form/sheet/group" position="after">
+                    <field name="flag" invisible="1"/>
+
+                    <group attrs="{'invisible': ['|', ('flag', '!=', '1'), ('payment_type', '=', 'outbound')]}">
+                        <table>
+                            <tr>
+                                <td width="120px">
+                                    付款差额
+                                </td>
+                                <td width="120px">
+                                    <field name="total_price" nolabel="1" readonly="1"/>
+                                </td>
+                                <td width="120px">
+                                    在
+                                </td>
+                            </tr>
+                        </table>
+                    </group>
+
+                    <group attrs="{'invisible': ['|', ('flag', '!=', '1'), ('payment_type', '=', 'outbound')]}">
+                        <div>
+                            <field name="writeoff_save_id" string="Post Difference In">
+                                <tree editable="top">
+                                    <field name="code"/>
+                                    <field name="name"/>
+                                    <field name="money"/>
+                                    <field name="currencys_id" readonly="1"/>
+                                    <!--<field name="currencys_id"/>-->
+                                    <field name="self_amount" invisible="1"/>
+                                    <field name="remark"/>
+                                </tree>
+                            </field>
+                            <label for="journal_id" string="Journal" attrs="{'invisible': [('amount', '!=', 0)]}"/>
+                            <field name="journal_id" string="Journal" widget="selection"
+                                   attrs="{'invisible': [('amount', '!=', 0)]}"/>
+                        </div>
+                    </group>
+                </xpath>
+
+                <xpath expr="/form/sheet/group[3]" position="after">
+                    <group attrs="{'invisible': [('payment_difference', '=', 0.0)]}">
+                        <label for="payment_difference"/>
+                        <div>
+                            <field name="payment_difference"/>
+                            <field name="payment_difference_handling" widget="radio" nolabel="1" attrs="{'invisible': [('payment_type', '=', 'inbound')]}"/>
+                            <div attrs="{'invisible': ['|', ('payment_difference_handling','=','open'), ('payment_type', '=', 'inbound')]}" >
+                                <label for="writeoff_account_id" class="oe_edit_only" string="过账差额"/>
+                                <field name="writeoff_account_id" string="过账差额"/>
+                                <label for="journal_id" string="Journal" attrs="{'invisible': [('amount', '!=', 0)]}"/>
+                                <field name="journal_id" string="Journal" widget="selection"
+                                       attrs="{'invisible': [('amount', '!=', 0)]}"/>
+                                <label for="writeoff_label" class="oe_edit_only" string="标签"/>
+                                <field name="writeoff_label"/>
+                            </div>
+                        </div>
+                    </group>
+                </xpath>
+            </field>
+        </record>
+
+    </data>
+</odoo>

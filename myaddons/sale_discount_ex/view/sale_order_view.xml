@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record model="ir.ui.view" id="view_sale_order_form_inherit">
+            <field name="name">view.sale.order.form.inherit</field>
+            <field name="model">sale.order</field>
+            <field name="inherit_id" ref="sale.view_order_form"/>
+            <field name="arch" type="xml">
+                <field name="partner_id" position="after">
+                    <field name="is_gross"/>
+                    <field name="discount_td" invisible="1"/>
+                    <field name="discount_pd" invisible="1"/>
+                    <field name="discount_io" invisible="1"/>
+                    <field name="discount_ot" invisible="1"/>
+                </field>
+                <xpath expr="//field[@name='order_line']//tree//field[@name='price_unit']" position="after">
+                    <field name="discount_td"/>
+                    <field name="discount_pd"/>
+                    <field name="discount_io"/>
+                    <field name="discount_ot"/>
+                </xpath>
+                <xpath expr="//field[@name='order_line']" position="attributes">
+                    <attribute name="context">{'default_discount_td':discount_td,'default_discount_pd':discount_pd,
+                        'default_discount_io':discount_io,'default_discount_ot':discount_ot}
+                    </attribute>
+                </xpath>
+                <xpath expr="//field[@name='client_order_ref']" position="after">
+                    <field name="x_guest_supplier_code"/>
+                    <field name="x_customer_designated_positions"/>
+                </xpath>
+            </field>
+        </record>
+    </data>
+</odoo>

@@ -1,0 +1,24 @@
+<odoo>
+    <data>
+        <record id="res_config_settings_view_form_stock" model="ir.ui.view">
+            <field name="name">res.config.settings.view.form.inherit.mrp.inherit</field>
+            <field name="model">res.config.settings</field>
+            <field name="inherit_id" ref="stock.res_config_settings_view_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//div[@id='warning_info']/.." position="inside">
+                      <div class="col-12 col-lg-6 o_setting_box">
+                        <div class="o_setting_left_pane">
+                            <field name="module_stock_lot_ex"/>
+                        </div>
+                        <div class="o_setting_right_pane">
+                            <label for="module_stock_lot_ex" string="启用手动挑选库存模块"/>
+                            <div class="text-muted">
+                                勾选后启用手动挑选库存模块,并隐藏调拨单的检查可用和取消保留按钮,销售单确认后不立即保留
+                            </div>
+                        </div>
+                    </div>
+                </xpath>
+            </field>
+        </record>
+    </data>
+</odoo>

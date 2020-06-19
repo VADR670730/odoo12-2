@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+    <!-- 客户产品编码表 -->
+        <record id="view_res_partner_product_tree" model="ir.ui.view">
+            <field name="name">res.partner.product.tree</field>
+            <field name="model">res.partner.product</field>
+            <field name="arch" type="xml">
+                <tree string="客户产品编码表">
+                    <field name="partner_id"/>
+                    <field name="code"/>
+                    <field name="name" invisible="0"/>
+                    <field name="product_id"/>
+                </tree>
+            </field>
+        </record>
+
+        <record id="view_res_partner_product_form" model="ir.ui.view">
+            <field name="name">res.partner.product.form</field>
+            <field name="model">res.partner.product</field>
+            <field name="priority" eval="8"/>
+            <field name="arch" type="xml">
+                <form string="客户产品编码表">
+                    <!--<header>-->
+                        <!--<button name="action_update_all_pricelist" string="更新价格表" type="object" class="oe_highlight" icon="fa-check"/>-->
+                    <!--</header>-->
+                    <sheet>
+                        <group col="2">
+                            <field name="partner_id"
+                                   domain="[('customer','=',True)]"
+                                   class="oe_inline" options="{'no_create': True, 'no_open': True}"/>
+                            <field name="code"
+                                   class="oe_inline"/>
+                            <field name="name" invisible="0"
+                                   class="oe_inline"/>
+                            <field name="product_id"
+                                   class="oe_inline" options="{'no_create': True, 'no_open': True}"/>
+                        </group>
+                        <notebook>
+                            <page name="note" string="备注">
+                                <field name="note"/>
+                            </page>
+                            <page name="system" string="系统信息">
+                                <group colspan="4">
+                                    <field name="active" string="启用"/>
+                                    <field name="create_uid" readonly="1" string="建立人"/>
+                                    <field name="create_date" readonly="1" string="建立日"/>
+                                    <field name="write_uid" readonly="1" string="修改人"/>
+                                    <field name="write_date" readonly="1" string="修改日"/>
+                                </group>
+                            </page>
+                        </notebook>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <record id="view_res_partner_product_search" model="ir.ui.view">
+            <field name="name">res.partner.product.search</field>
+            <field name="model">res.partner.product</field>
+            <field name="arch" type="xml">
+                <search string="Search">
+                    <field name="partner_id" string="客户" filter_domain="[('partner_id','ilike',self)]"/>
+                    <field name="name" string="客户产品" filter_domain="['|',('name','ilike',self),('code','ilike',self)]"/>
+                    <field name="product_id" string="我司产品" filter_domain="['|',('product_id.name','ilike',self),('product_id.default_code','ilike',self)]"/>
+                    <separator/>
+
+                    <group expand="0" string="Group By...">
+                        <filter string="客户" domain="[]" context="{'group_by':'partner_id'}"/>
+                        <filter string="我司产品" domain="[]" context="{'group_by':'product_id'}"/>
+                    </group>
+                </search>
+            </field>
+        </record>
+
+        <record model="ir.actions.act_window" id="action_res_partner_product">
+            <field name="name">客户产品编码表</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">res.partner.product</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="search_view_id" ref="view_res_partner_product_search"/>
+            <!-- <field name="domain">[('field_name','condition',criteria)]</field> -->
+            <field name="context">{}</field>
+        </record>
+
+        <menuitem id="menu_res_partner_product"
+                  name="客户产品编码表"
+                  parent="sale.menu_product_pricelist_main"
+                  sequence="10"
+                  groups="product.group_sale_pricelist"
+                  action="action_res_partner_product"/>
+
+    </data>
+</odoo>

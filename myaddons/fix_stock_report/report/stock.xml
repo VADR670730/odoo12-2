@@ -1,0 +1,331 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!--拣货作业 更改纸张格式-->
+    <record id="paperformat_picking_operation" model="report.paperformat">
+        <field name="name">Picking Operation</field>
+        <field name="default" eval="True"/>
+        <field name="format">custom</field>
+        <field name="page_height">280</field>
+        <field name="page_width">241</field>
+        <field name="orientation">Landscape</field>
+        <field name="margin_top">40</field>
+        <field name="margin_bottom">28</field>
+        <field name="margin_left">15</field>
+        <field name="margin_right">15</field>
+        <field name="header_line" eval="False"/>
+        <field name="header_spacing">35</field>
+        <field name="dpi">80</field>
+    </record>
+
+    <!--拣货作业 在菜单添加paperformat指向自己定义的纸张格式-->
+    <report
+            string="Picking Operations"
+            id="stock.action_report_picking"
+            model="stock.picking"
+            report_type="qweb-pdf"
+            name="stock.report_picking"
+            file="stock.report_picking_operations"
+            paperformat="paperformat_picking_operation"
+    />
+
+    <!--拣货作业 继承添加修改显示内容-->
+    <template id="report_picking_operations_inherit_stock" inherit_id="stock.report_picking">
+
+        <xpath expr="//t[@t-call='web.external_layout']" position="attributes">
+            <attribute name="t-call">fix_stock_report.stock_layout_standard</attribute>
+        </xpath>
+
+
+        <xpath expr="//div[@class='page']/div[1]" position="replace">
+
+        </xpath>
+        <xpath expr="//div[@class='page']/div[1]" position="replace">
+
+        </xpath>
+        <xpath expr="//div[@class='page']/h1" position="replace">
+
+        </xpath>
+
+        <!--中间表格增加几个字段显示-->
+        <xpath expr="//div/table[@class='table table-sm']" position="replace">
+            <table class="table table-sm"
+                   style="font-size: 12px; width: 100%; margin: 10px 0; border-collapse: collapse;">
+                <thead>
+                    <tr>
+                        <th t-if="o.origin" style="padding: 5px" class="text-left">
+                            <strong>订单</strong>
+                        </th>
+                        <th style="padding: 5px" class="text-left">客户参考</th>
+                        <th style="padding: 5px; width:15%" class="text-left">订单备注</th>
+                        <!--<th style="padding: 5px" class="text-left">仓库地址</th>-->
+                        <th style="padding: 5px" class="text-left">来自</th>
+                        <th style="padding: 5px" class="text-left">目的</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td t-if="o.origin" style="padding: 5px " class="text-left">
+                            <span t-field="o.origin"/>
+                        </td>
+                        <td style="padding: 5px" class="text-left">
+                            <div t-field="o.sudo().sale_id.partner_id"/>
+                            <div t-field="o.sudo().sale_id.client_order_ref"/>
+                        </td>
+                        <td style="padding: 5px; width:15%" class="text-left">
+                            <div t-field="o.sudo().sale_id.note"/>
+                        </td>
+                        <!--<td style="padding: 5px" class="text-left">-->
+                            <!--<div t-field="o.picking_type_id.warehouse_id.partner_id"-->
+                                 <!--t-options='{"widget": "contact", "fields": ["address", "name", "phone"], "no_marker": True, "phone_icons": True}'/>-->
+                        <!--</td>-->
+                        <td style="padding: 5px" class="text-left">
+                            <span t-field="o.location_id.location_id.name"/>
+                            /
+                            <span t-field="o.location_id.name"/>
+                        </td>
+                        <td style="padding: 5px" class="text-left">
+                            <span t-field="o.location_dest_id.location_id.name"/>
+                            /
+                            <span t-field="o.location_dest_id.name"/>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </xpath>
+
+        <xpath expr="//div/table[2][@class='table table-sm']" position="replace">
+            <table class="table table-sm" t-if="o.move_lines"
+                   style="font-size: 12px; width: 100%; margin: 10px 0; border-collapse: collapse;">
+                <thead>
+                    <tr>
+                        <th style="padding: 5px" class="text-left">
+                            <strong>产品</strong>
+                        </th>
+                        <th style="padding: 5px" class="text-left">
+                            <strong>数量</strong>
+                        </th>
+                        <th style="padding: 5px" class="text-left">
+                            <strong>
+                                产品条码
+                            </strong>
+                        </th>
+                        <th style="padding: 5px" class="text-left">
+                            批次
+                        </th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    <t t-set="lines" t-value="o.move_lines.filtered(lambda x: x.product_uom_qty)"/>
+                    <tr t-foreach="lines" t-as="move">
+                        <td style="padding: 5px; width:30%" class="text-left">
+                            <span t-field="move.product_id"/>
+                            <p t-if="o.picking_type_code == 'incoming'">
+                                <span t-field="move.product_id.sudo().description_pickingin"/>
+                            </p>
+                        </td>
+                        <td style="padding: 5px; width:18%" class="text-left">
+                            <span t-field="move.product_uom_qty"/>
+                            <span t-field="move.product_uom"/>
+                        </td>
+                        <!---->
+                        <td style="padding: 5px; width:18%" class="text-left">
+                            <t t-if="product_barcode != move.product_id.barcode"/>
+                            <span t-field="move.product_id.barcode"/>
+                        </td>
+                        <!---->
+                        <td style="padding: 5px; width:34%" class="text-left">
+                            <t t-foreach="move.compute_stock_lot()" t-as="i">
+                                <t t-foreach="i" t-as="j">
+                                    <p>
+                                        <t t-esc="j"/>
+                                    </p>
+                                </t>
+                            </t>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </xpath>
+
+        <xpath expr="//div/p[@class='fa fa-exclamation-triangle']" position="replace">
+
+        </xpath>
+
+        <!--<xpath expr="//div[@class='page']" position="after">-->
+        <!--<div class="row" style="margin-top:500px;">-->
+        <!--<div style="width: 28%; margin-left: 20px">商务部:</div>-->
+        <!--<div style="width: 28%;">仓库部:</div>-->
+        <!--<div style="width: 28%;">财务部:</div>-->
+        <!--<div style="width: 28%;">发货部:</div>-->
+        <!--</div>-->
+        <!--</xpath>-->
+
+    </template>
+
+    <!--交货单-->
+    <record id="paperformat_delivery_operation_stock" model="report.paperformat">
+        <field name="name">Delivery Slip</field>
+        <field name="default" eval="True"/>
+        <field name="format">custom</field>
+        <field name="page_height">280</field>
+        <field name="page_width">241</field>
+        <field name="orientation">Landscape</field>
+        <field name="margin_top">40</field>
+        <field name="margin_bottom">28</field>
+        <field name="margin_left">15</field>
+        <field name="margin_right">15</field>
+        <field name="header_line" eval="False"/>
+        <field name="header_spacing">35</field>
+        <field name="dpi">80</field>
+    </record>
+
+    <report
+            string="Delivery Slip"
+            id="stock.action_report_delivery"
+            model="stock.picking"
+            report_type="qweb-pdf"
+            name="stock.report_deliveryslip"
+            file="stock.report_deliveryslip"
+            paperformat="paperformat_delivery_operation_stock"
+    />
+
+    <template id="report_stock_delivery_slip_inherit" inherit_id="stock.report_delivery_document">
+        <xpath expr="//t[@t-call='web.external_layout']" position="attributes">
+            <attribute name="t-call">fix_stock_report.stock_layout_standard</attribute>
+        </xpath>
+
+
+        <xpath expr="//div[@class='page']/h2" position="replace">
+        </xpath>
+
+        <xpath expr="//t[@t-if='o.move_lines and o.move_lines[0].partner_id']" position="replace">
+
+        </xpath>
+        <xpath expr="//t[@t-if='not (o.move_lines and o.move_lines[0].partner_id) and o.partner_id']"
+               position="replace">
+
+        </xpath>
+
+    </template>
+
+    <template id="report_delivery_slip_inherit_sale_stock"
+              inherit_id="sale_stock.report_delivery_document_inherit_sale_stock">
+        <xpath expr="//div/div[@class='row justify-content-end']" position="replace">
+        </xpath>
+
+        <xpath expr="//div/table[@class='table table-sm']" position="attributes">
+            <attribute name="style">font-size: 12px; width: 100%; margin: 10px 0; border-collapse: collapse</attribute>
+        </xpath>
+
+        <!--<xpath expr="//div/table[@class='table table-sm']/tbody/tr/td[@name='td_sched_date']" position="attributes">-->
+        <!--<attribute name="style">width:10%</attribute>-->
+        <!--</xpath>-->
+
+        <xpath expr="//div/table[@class='table table-sm']/thead/tr/th[1]" position="after">
+            <th style="padding: 5px" class="text-left">
+                <strong>客户参考</strong>
+            </th>
+            <th style="padding: 5px" class="text-left">
+                <strong>订单备注</strong>
+            </th>
+            <th style="padding: 5px" class="text-left">
+                <strong>仓库地址</strong>
+            </th>
+            <th style="padding: 5px" class="text-left">
+                <strong>来自</strong>
+            </th>
+            <th style="padding: 5px" class="text-left">
+                <strong>目的</strong>
+            </th>
+        </xpath>
+
+        <xpath expr="//div/table[@class='table table-sm']/tbody/tr/td[1]" position="after">
+            <td style="padding: 5px" class="text-left">
+                <div t-field="o.sudo().sale_id.partner_id"/>
+                <div t-field="o.sudo().sale_id.client_order_ref"/>
+            </td>
+            <td style="padding: 5px" class="text-left">
+                <div t-field="o.sudo().sale_id.note"/>
+            </td>
+            <td style="padding: 5px" class="text-left">
+                <div t-field="o.partner_id"/>
+            </td>
+            <td style="padding: 5px" class="text-left">
+                <span t-field="o.location_id.location_id.name"/>
+                /
+                <span t-field="o.location_id.name"/>
+            </td>
+            <td style="padding: 5px" class="text-left">
+                <span t-field="o.location_dest_id.location_id.name"/>
+                /
+                <span t-field="o.location_dest_id.name"/>
+            </td>
+        </xpath>
+
+        <xpath expr="//div/table[3]" position="replace">
+        </xpath>
+
+        <xpath expr="//div/table[2]" position="after">
+            <table class="table table-sm" t-if="o.move_lines"
+                   style="font-size: 12px; width: 100%; margin: 10px 0; border-collapse: collapse">
+                <thead>
+                    <tr>
+                        <th style="padding: 5px" class="text-left">
+                            <strong>产品</strong>
+                        </th>
+                        <th style="padding: 5px" class="text-left">
+                            <strong>数量</strong>
+                        </th>
+                        <th style="padding: 5px" class="text-left">
+                            <strong>
+                                产品条码
+                            </strong>
+                        </th>
+                        <th style="padding: 5px" class="text-left">
+                            批次
+                        </th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    <t t-set="lines" t-value="o.move_lines.filtered(lambda x: x.product_uom_qty)"/>
+                    <tr t-foreach="lines" t-as="move">
+                        <td style="padding: 5px; width:30%" class="text-left">
+                            <span t-field="move.product_id"/>
+                            <p t-if="o.picking_type_code == 'incoming'">
+                                <span t-field="move.product_id.sudo().description_pickingin"/>
+                            </p>
+                        </td>
+                        <td style="padding: 5px; width:18%" class="text-left">
+                            <span t-field="move.product_uom_qty"/>
+                            <span t-field="move.product_uom"/>
+                        </td>
+                        <!---->
+                        <td style="padding: 5px; width:18%" class="text-left">
+                            <t t-if="product_barcode != move.product_id.barcode"/>
+                            <span t-field="move.product_id.barcode"/>
+                        </td>
+                        <!---->
+                        <td style="padding: 5px; width:34%" class="text-left">
+                            <t t-foreach="move.compute_stock_lot()" t-as="i">
+                                <t t-foreach="i" t-as="j">
+                                    <p>
+                                        <t t-esc="j"/>
+                                    </p>
+                                </t>
+                            </t>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </xpath>
+
+        <xpath expr="//div/table[2]" position="replace">
+        </xpath>
+
+
+    </template>
+
+</odoo>

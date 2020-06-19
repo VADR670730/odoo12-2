@@ -1,0 +1,82 @@
+<odoo>
+  <data>
+      <record id="view_order_form_add_map_product" model="ir.ui.view">
+            <field name="name">sale.order.form.map_product</field>
+            <field name="model">sale.order</field>
+            <field name="inherit_id" ref="sale.view_order_form"/>
+            <field name="arch" type="xml">
+
+                <xpath expr="//header/field[@name='authorized_transaction_ids']" position="before">
+                    <field name="sub_nums" invisible="1"/>
+                </xpath>
+
+                <xpath expr="//group/field[@name='partner_id']" position="attributes">
+                    <attribute name="context">
+                        {'search_default_customer':1, 'show_address': 1, 'show_vat': True,
+                         'partner_id':partner_id }
+                    </attribute>
+                </xpath>
+
+                <xpath expr="//tree/field[@name='product_id']" position="before">
+                    <!--<field name="partner_id"/>-->
+
+                    <field name="map_product_line" context="{
+                                            'product_id': product_id,
+                                            'partner_id': parent.partner_id
+                                        }"
+                                        domain = "[['partner_id','=',parent.partner_id]]"
+                    />
+                </xpath>
+
+                <xpath expr="//notebook/page[@name='order_lines']/field[@name='order_line']/form/group/group/field[@name='sequence']" position="before">
+                    <field name="map_product_line" ontext="{
+                                            'product_id': product_id,
+                                            'partner_id': parent.partner_id
+                                        }"
+                                        domain = "[['partner_id','=',parent.partner_id]]"/>
+                </xpath>
+
+
+                <xpath expr="//notebook/page[@name='order_lines']/field[@name='order_line']" position="attributes">
+                    <attribute name="context">{'sub_nums':sub_nums,'partner_id':partner_id}</attribute>
+                </xpath>
+
+
+                <xpath expr="//tree/field[@name='product_id']" position="attributes">
+                    <attribute name="context">
+                        { 'partner_id': parent.partner_id,
+                        'quantity': product_uom_qty,
+                        'pricelist': parent.pricelist_id,
+                        'uom':product_uom,
+                        'company_id': parent.company_id,
+                        'default_lst_price': price_unit,
+                        'default_description_sale': name,
+                        'map_product_line':map_product_line }
+                    </attribute>
+                </xpath>
+
+            </field>
+        </record>
+
+      <!--<record id="view_order_form_add_map_product" model="ir.ui.view">-->
+            <!--<field name="name">sale.order.form.map_product</field>-->
+            <!--<field name="model">sale.order</field>-->
+            <!--<field name="inherit_id" ref="sale_stock.view_order_form_inherit_sale_stock"/>-->
+            <!--<field name="arch" type="xml">-->
+                <!--<xpath expr="//field[@name='product_packaging']" position="before">-->
+                    <!--<field name="map_product_line" ontext="{-->
+                                            <!--'product_id': product_id,-->
+                                            <!--'partner_id': parent.partner_id-->
+                                        <!--}"-->
+                                        <!--domain = "[['partner_id','=',parent.partner_id]]"/>-->
+                <!--</xpath>-->
+            <!--</field>-->
+
+      <!--</record>-->
+
+
+
+
+
+  </data>
+</odoo>
